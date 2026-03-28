@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./Homepage.css";
 import Trio from "./puzzles/Trio";
 import Drums from "./puzzles/Drums";
+import Piano from "./puzzles/Piano";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
@@ -35,8 +36,8 @@ const CHARACTERS = [
         description: "Desc",
         image: "/images/mille_pattes_fache.png",
         instrument: "Piano",
-        component: null,
-        ready: false,
+        component: Piano,
+        ready: true,
         stagePos: { bottom: "6%", left: "48%", width: "28%" },
     },
     {
