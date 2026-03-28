@@ -17,7 +17,7 @@ const CHARACTERS = [
         instrument: "Vents",
         component: Trio,
         ready: true,
-        stagePos: { bottom: "14%", left: "60%", width: "34%"},
+        stagePos: { bottom: "14%", left: "60%", width: "34%", zIndex: 2 },
     },
     {
         id: "gnomes",
@@ -28,7 +28,7 @@ const CHARACTERS = [
         instrument: "Contrebasse",
         component: Bass,
         ready: true,
-        stagePos: { bottom: "32%", left: "27%", width: "26%" },
+        stagePos: { bottom: "32%", left: "27%", width: "26%", zIndex: 1 },
     },
     {
         id: "millepattes",
@@ -39,7 +39,7 @@ const CHARACTERS = [
         instrument: "Piano",
         component: Piano,
         ready: true,
-        stagePos: { bottom: "30%", left: "52%", width: "22%" },
+        stagePos: { bottom: "30%", left: "52%", width: "22%", zIndex: 1 },
     },
     {
         id: "pieuvre",
@@ -50,7 +50,7 @@ const CHARACTERS = [
         instrument: "Batterie",
         component: Drums,
         ready: true,
-        stagePos: { bottom: "18%", left: "10%", width: "32%" },
+        stagePos: { bottom: "18%", left: "10%", width: "32%", zIndex: 2 },
     },
 ];
 
