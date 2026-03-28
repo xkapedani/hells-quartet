@@ -1,0 +1,156 @@
+.trio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+    gap: 1.2rem;
+    min-height: 100vh;
+    background: #111;
+    color: #e8e8e8;
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.trio-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.trio-instruction {
+    font-size: 1rem;
+    color: #aaa;
+    margin: 0;
+    text-align: center;
+    max-width: 520px;
+}
+
+/* ── Image + zones ────────────────────────────────────────────────────────── */
+
+.trio-image-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+}
+
+.trio-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    user-select: none;
+    pointer-events: none;
+}
+
+.trio-zone {
+    position: absolute;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        border-color 0.15s;
+}
+
+.trio-zone:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.trio-zone--playing {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Feedback ─────────────────────────────────────────────────────────────── */
+
+.trio-feedback {
+    font-size: 0.95rem;
+    color: #ccc;
+    text-align: center;
+    max-width: 520px;
+    margin: 0;
+    min-height: 1.4em;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+
+.trio-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.trio-btn {
+    padding: 0.5rem 1.4rem;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: transparent;
+    color: #e8e8e8;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        border-color 0.15s;
+}
+
+.trio-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #888;
+}
+
+.trio-btn--main {
+    border-color: #e8e8e8;
+    font-weight: 600;
+}
+
+.trio-btn--main:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Legend ───────────────────────────────────────────────────────────────── */
+
+.trio-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    max-width: 700px;
+    width: 100%;
+    border-top: 1px solid #2a2a2a;
+    padding-top: 1.2rem;
+}
+
+.trio-legend-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 140px;
+    flex: 1;
+    max-width: 200px;
+}
+
+.trio-legend-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e8e8e8;
+}
+
+.trio-legend-hint {
+    font-size: 0.78rem;
+    color: #777;
+    line-height: 1.4;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .trio-title {
+        font-size: 1.1rem;
+    }
+
+    .trio-legend-item {
+        min-width: 120px;
+    }
+}
