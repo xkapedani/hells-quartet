@@ -370,7 +370,7 @@ function Drums() {
                         ref={drumImgRef}
                         src={cooldown ? `${publicPath}/images/drum-empty.png` : `${publicPath}/images/drum-full.png`}
                         alt="drum"
-                        style={{ width: 620, height: "auto", pointerEvents: "none" }}
+                        style={{ width: 300, height: 500, objectFit: "cover", pointerEvents: "none" }}
                     />
                 </div>
             </div>
