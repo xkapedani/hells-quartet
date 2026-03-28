@@ -1,12 +1,15 @@
-import logo from './logo.svg';
 import './App.css';
-import Homepage from './Homepage';
+import { Route, Routes } from 'react-router-dom';
+import Homepage from './Homepage.js';
+import Trio from './puzzles/Trio.js';
 
 function App() {
   return (
     <div className="App">
-      {/* display homepage */}
-      <Homepage />
+      <Routes>
+        <Route path="/hells-quartet" element={<Homepage />} />
+        <Route path="/hells-quartet/trio" element={<Trio />} />
+      </Routes>
     </div>
   );
 }
