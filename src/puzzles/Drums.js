@@ -199,7 +199,7 @@ function Drums() {
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", height: "100%", padding: 20, boxSizing: "border-box", justifyContent: "center" }}>
             <div style={{ marginTop: 8, textAlign: "center" }}>
                 <img
                     src={pieuvreHappy ? `${publicPath}/images/pieuvre_triste_sans_fond.png` : `${publicPath}/images/pieuvre_triste_sans_fond.png`}
@@ -208,7 +208,7 @@ function Drums() {
                     role="button"
                     tabIndex={0}
                     style={{
-                        width: 240,
+                        width: 1040,
                         height: "auto",
                         objectFit: "contain",
                         display: "block",
