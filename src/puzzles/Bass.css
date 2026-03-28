@@ -9,9 +9,17 @@
     padding: 2rem 1rem 4rem;
     gap: 1.2rem;
     min-height: 100vh;
-    background: #070709;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(4, 2, 8, 0.72) 0%,
+            rgba(10, 5, 16, 0.65) 50%,
+            rgba(4, 2, 8, 0.8) 100%
+        ),
+        url("../../public/images/scene.png") center / cover no-repeat;
     color: #e8e8e8;
     font-family: "Segoe UI", system-ui, sans-serif;
+    position: relative;
 }
 
 /* ── Header ───────────────────────────────────────────────────────────────── */
@@ -88,9 +96,9 @@
 
 .bass-gnomes-wrap {
     flex: 0 0 auto;
-    width: 340px;
+    width: 480px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
 }
 
@@ -120,6 +128,11 @@
     gap: 0.6rem;
     min-width: 0;
     max-width: 580px;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 16px;
+    padding: 1rem;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 /* ── Single string row ────────────────────────────────────────────────────── */
@@ -397,7 +410,7 @@
     }
 
     .bass-gnomes-wrap {
-        width: 260px;
+        width: 320px;
     }
 
     .bass-strings-panel {
@@ -421,7 +434,7 @@
     }
 
     .bass-gnomes-wrap {
-        width: 200px;
+        width: 240px;
     }
 
     .bass-string {
