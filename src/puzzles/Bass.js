@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import * as Tone from "tone";
 import "./Bass.css";
+import DialogBox from "../components/DialogBox";
+import Particles from "./Particles";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   String / note definitions
-   Real bass open-string pitches.
+   String / note definitions – spread across 3 octaves so they sound
+   obviously different
+ from one another.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 const STRINGS = [
@@ -18,19 +21,10 @@ const STRINGS = [
 
 /* ── Tuning constants ──────────────────────────────────────────────────────── */
 
-/* Half-width of each string's slider range.
-   The slider covers  [target - RANGE_HZ  …  target + RANGE_HZ].
-   Narrower range → more physical movement required per Hz → harder to hit
-   the tolerance window by accident.                                         */
-const RANGE_HZ = 35;
-
-/* Tolerance to count as "accordé".  0.5 Hz over a 70 Hz range means the
-   sweet spot is only 0.7 % of the slider's travel — you must be precise.   */
-const TUNE_TOLERANCE_HZ = 0.5;
-
-/* ── Start position: always detuned by at least MIN_OFFSET Hz ─────────────── */
-const MIN_OFFSET = 18;
-const MAX_OFFSET = RANGE_HZ - 2; // stay inside the slider range
+const RANGE_HZ = 35; // slider covers [target-35 … target+35]
+const TUNE_TOLERANCE_HZ = 0.5; // must land within 0.5 Hz to count as tuned
+const MIN_OFFSET = 18; // start at least this far from target
+const MAX_OFFSET = RANGE_HZ - 2;
 
 function randomStartHz(targetHz) {
     const sign = Math.random() < 0.5 ? -1 : 1;
@@ -38,7 +32,6 @@ function randomStartHz(targetHz) {
     return targetHz + sign * offset;
 }
 
-/* Per-string slider bounds */
 function sliderMin(targetHz) {
     return targetHz - RANGE_HZ;
 }
@@ -49,9 +42,6 @@ function sliderMax(targetHz) {
 /* ── SVG wave helpers ──────────────────────────────────────────────────────── */
 
 function hzToVisualFreq(hz, targetHz) {
-    /* Map the slider range to a visual frequency range of [1.2 … 5.2].
-       Compresses the visual difference so the wave doesn't telegraph the
-       exact answer, but still changes noticeably as you move the slider.    */
     const t = (hz - sliderMin(targetHz)) / (RANGE_HZ * 2);
     return 1.2 + t * 4.0;
 }
@@ -67,7 +57,7 @@ function wavePath(width, height, freqFactor, amplitude) {
     return d;
 }
 
-/* ── Colour helper: subtle warm blend only very close to target ────────────── */
+/* ── Colour helpers ────────────────────────────────────────────────────────── */
 
 function hexToRgb(hex) {
     const m = hex.replace("#", "").match(/.{2}/g);
@@ -110,6 +100,8 @@ function BassString({
     onSelect,
     onPlayReference,
     onPlayOwn,
+    onDragStart,
+    onDragEnd,
 }) {
     const { label, targetHz, color } = stringDef;
 
@@ -119,11 +111,10 @@ function BassString({
 
     const targetVisFreq = hzToVisualFreq(targetHz, targetHz);
     const playerVisFreq = hzToVisualFreq(playerHz, targetHz);
-
     const targetPath = wavePath(W, H, targetVisFreq, amplitude * 0.85);
     const playerPath = wavePath(W, H, playerVisFreq, amplitude);
 
-    /* Colour: subtle green tint only inside 3 × tolerance — not obvious      */
+    /* Subtle colour shift only within 3× tolerance */
     const diff = Math.abs(playerHz - targetHz);
     let strokeColor = color;
     if (isTuned) {
@@ -133,7 +124,6 @@ function BassString({
         strokeColor = lerpColor(color, "#4caf50", t * 0.5);
     }
 
-    /* Slider progress % for the CSS fill trick */
     const min = sliderMin(targetHz);
     const max = sliderMax(targetHz);
     const progress = ((playerHz - min) / (max - min)) * 100;
@@ -158,7 +148,6 @@ function BassString({
                 viewBox={`0 0 ${W} ${H}`}
                 preserveAspectRatio="none"
             >
-                {/* Target wave – only shown once tuned */}
                 {isTuned && (
                     <path
                         d={targetPath}
@@ -169,7 +158,6 @@ function BassString({
                         opacity={0.7}
                     />
                 )}
-                {/* Player wave */}
                 <path
                     d={playerPath}
                     stroke={strokeColor}
@@ -179,7 +167,7 @@ function BassString({
                 />
             </svg>
 
-            {/* Controls – active & not yet tuned */}
+            {/* Controls */}
             {isActive && !isTuned && (
                 <div className="bass-string-controls">
                     <button
@@ -211,10 +199,21 @@ function BassString({
                             className="bass-slider"
                             min={min}
                             max={max}
-                            /* No step → continuous, no lucky snaps */
                             value={playerHz}
                             onChange={(e) =>
                                 onChangeHz(parseFloat(e.target.value))
+                            }
+                            onMouseDown={onDragStart}
+                            onMouseUp={(e) =>
+                                onDragEnd(parseFloat(e.target.value))
+                            }
+                            onTouchStart={onDragStart}
+                            onTouchEnd={(e) =>
+                                onDragEnd(
+                                    e.changedTouches[0]
+                                        ? parseFloat(e.target.value)
+                                        : playerHz,
+                                )
                             }
                             style={{
                                 "--slider-color": strokeColor,
@@ -238,6 +237,7 @@ function BassString({
 export default function Bass() {
     const publicPath = PUBLIC;
 
+    /* ── Game state ──────────────────────────────────────────────────────── */
     const [playerHzArr, setPlayerHzArr] = useState(() =>
         STRINGS.map((s) => randomStartHz(s.targetHz)),
     );
@@ -246,15 +246,46 @@ export default function Bass() {
     const [allTuned, setAllTuned] = useState(false);
     const [gnomesHappy, setGnomesHappy] = useState(false);
 
-    /* ── Tone.js synths ──────────────────────────────────────────────────── */
+    /* ── Dialog state ────────────────────────────────────────────────────── */
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState("");
+    const [dialogAvatar, setDialogAvatar] = useState(null);
+
+    /* ── Refs ────────────────────────────────────────────────────────────── */
+    const containerRef = useRef(null);
+    const gnomesRef = useRef(null);
+    const particlesRef = useRef(null);
     const playerSynthRef = useRef(null);
     const refSynthRef = useRef(null);
     const toneStartedRef = useRef(false);
+    const isDraggingRef = useRef(false);
+
+    /* ── Helpers ─────────────────────────────────────────────────────────── */
+
+    function showDialog(msg, opts = {}) {
+        setDialogMessage(msg);
+        setDialogAvatar(opts.avatar || null);
+        setDialogVisible(true);
+    }
+
+    function getRelativeCenter(ref) {
+        const container = containerRef.current;
+        const el = ref && ref.current;
+        if (!container || !el) return { x: 0, y: 0 };
+        const crect = container.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
+        return {
+            x: rect.left - crect.left + rect.width / 2,
+            y: rect.top - crect.top + rect.height / 2,
+        };
+    }
+
+    /* ── Tone.js setup ───────────────────────────────────────────────────── */
 
     useEffect(() => {
         const playerSynth = new Tone.Synth({
             oscillator: { type: "triangle" },
-            envelope: { attack: 0.08, decay: 0.3, sustain: 0.6, release: 0.8 },
+            envelope: { attack: 0.02, decay: 0.1, sustain: 0.8, release: 0.4 },
         }).toDestination();
         playerSynth.volume.value = -4;
 
@@ -280,7 +311,48 @@ export default function Bass() {
         }
     }, []);
 
-    /* ── Play reference (target note) — audio only, no visual hint ──────── */
+    /* ── Intro dialog ────────────────────────────────────────────────────── */
+
+    useEffect(() => {
+        const avatar = `${publicPath}/images/gnomes_faches.png`;
+        showDialog(
+            "Nos cordes sont toutes désaccordées ! Aide-nous à retrouver les bonnes notes.",
+            { avatar },
+        );
+        const target = containerRef.current || document;
+        const hide = () => setDialogVisible(false);
+        target.addEventListener("pointerdown", hide, { once: true });
+        return () => target.removeEventListener("pointerdown", hide);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    /* ── Success dialog ──────────────────────────────────────────────────── */
+
+    useEffect(() => {
+        if (!gnomesHappy) return;
+        const avatar = `${publicPath}/images/gnomes_heureux.png`;
+        showDialog(
+            "Magnifique ! Toutes les cordes sont accordées, on peut jouer !",
+            { avatar },
+        );
+        /* burst particles from gnomes */
+        const pos = getRelativeCenter(gnomesRef);
+        if (particlesRef.current) {
+            particlesRef.current.spawnBurst(pos.x, pos.y, 12, {
+                radius: 120,
+                size: 80,
+                lifetime: 1400,
+            });
+        }
+        const target = containerRef.current || document;
+        const hide = () => setDialogVisible(false);
+        target.addEventListener("pointerdown", hide, { once: true });
+        return () => target.removeEventListener("pointerdown", hide);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [gnomesHappy]);
+
+    /* ── Play reference note ─────────────────────────────────────────────── */
+
     const playReference = useCallback(
         async (stringIdx) => {
             await ensureTone();
@@ -297,7 +369,8 @@ export default function Bass() {
         [ensureTone],
     );
 
-    /* ── Play player's own current note ─────────────────────────────────── */
+    /* ── Play player's own note (one-shot) ───────────────────────────────── */
+
     const playOwn = useCallback(
         async (stringIdx, hz) => {
             await ensureTone();
@@ -313,16 +386,37 @@ export default function Bass() {
         [ensureTone],
     );
 
-    /* ── Handle slider change ────────────────────────────────────────────── */
-    const handleChangeHz = useCallback((stringIdx, newHz) => {
-        setPlayerHzArr((prev) => {
-            const copy = [...prev];
-            copy[stringIdx] = newHz;
-            return copy;
-        });
+    /* ── Drag start: begin continuous pitch ──────────────────────────────── */
 
-        const target = STRINGS[stringIdx].targetHz;
-        if (Math.abs(newHz - target) < TUNE_TOLERANCE_HZ) {
+    const handleDragStart = useCallback(
+        async (stringIdx, hz) => {
+            await ensureTone();
+            isDraggingRef.current = true;
+            const synth = playerSynthRef.current;
+            if (!synth) return;
+            try {
+                synth.triggerAttack(hz);
+            } catch (_) {}
+        },
+        [ensureTone],
+    );
+
+    /* ── Drag end: release tone then validate tuning ─────────────────────── */
+
+    const handleDragEnd = useCallback(
+        (stringIdx, finalHz) => {
+            isDraggingRef.current = false;
+            const synth = playerSynthRef.current;
+            if (synth) {
+                try {
+                    synth.triggerRelease();
+                } catch (_) {}
+            }
+
+            /* Validate only after the user lets go */
+            const target = STRINGS[stringIdx].targetHz;
+            if (Math.abs(finalHz - target) >= TUNE_TOLERANCE_HZ) return;
+
             setTunedArr((prev) => {
                 if (prev[stringIdx]) return prev;
                 const copy = [...prev];
@@ -335,9 +429,22 @@ export default function Bass() {
                     return hzCopy;
                 });
 
+                /* Small particle burst at gnome position */
+                const pos = getRelativeCenter(gnomesRef);
+                if (particlesRef.current) {
+                    particlesRef.current.spawnBurst(pos.x, pos.y, 5, {
+                        radius: 60,
+                        size: 60,
+                        lifetime: 900,
+                    });
+                }
+
                 if (copy.every(Boolean)) {
                     setAllTuned(true);
                     setGnomesHappy(true);
+                    try {
+                        localStorage.setItem("puzzle-bass-completed", "1");
+                    } catch (_) {}
                 } else {
                     const nextIdx = copy.findIndex((v) => !v);
                     if (nextIdx !== -1) {
@@ -346,30 +453,45 @@ export default function Bass() {
                 }
                 return copy;
             });
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
+
+    /* ── Slider change: update Hz + ramp oscillator only ────────────────── */
+
+    const handleChangeHz = useCallback((stringIdx, newHz) => {
+        setPlayerHzArr((prev) => {
+            const copy = [...prev];
+            copy[stringIdx] = newHz;
+            return copy;
+        });
+
+        /* Smoothly glide the oscillator to the new pitch while dragging */
+        const synth = playerSynthRef.current;
+        if (synth && isDraggingRef.current) {
+            synth.frequency.rampTo(newHz, 0.05);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /* ── Reset ───────────────────────────────────────────────────────────── */
-    function handleReset() {
-        try {
-            playerSynthRef.current && playerSynthRef.current.triggerRelease();
-        } catch (_) {}
-        try {
-            refSynthRef.current && refSynthRef.current.triggerRelease();
-        } catch (_) {}
-
-        setPlayerHzArr(STRINGS.map((s) => randomStartHz(s.targetHz)));
-        setTunedArr(STRINGS.map(() => false));
-        setActiveIdx(0);
-        setAllTuned(false);
-        setGnomesHappy(false);
-    }
-
-    const tunedCount = tunedArr.filter(Boolean).length;
 
     /* ── Render ──────────────────────────────────────────────────────────── */
+
     return (
-        <div className="bass">
+        <div className="bass" ref={containerRef}>
+            <Particles ref={particlesRef} publicPath={publicPath} />
+
+            <DialogBox
+                message={dialogMessage}
+                visible={dialogVisible}
+                onClose={() => setDialogVisible(false)}
+                autoCloseMs={0}
+                avatar={dialogAvatar}
+                position="bottom"
+            />
+
             <h1 className="bass-title">Accorde la contrebasse des gnomes</h1>
             <p className="bass-instruction">
                 {allTuned
@@ -397,15 +519,13 @@ export default function Bass() {
                         {s.label}
                     </div>
                 ))}
-                <span className="bass-progress-text">
-                    {tunedCount}/{STRINGS.length} accordées
-                </span>
             </div>
 
-            {/* Main area */}
+            {/* Main area: gnomes + strings */}
             <div className="bass-main">
                 <div className="bass-gnomes-wrap">
                     <img
+                        ref={gnomesRef}
                         src={
                             gnomesHappy
                                 ? `${publicPath}/images/gnomes_heureux.png`
@@ -434,54 +554,12 @@ export default function Bass() {
                             onPlayReference={() => playReference(i)}
                             onPlayOwn={() => playOwn(i, playerHzArr[i])}
                             onChangeHz={(hz) => handleChangeHz(i, hz)}
+                            onDragStart={() =>
+                                handleDragStart(i, playerHzArr[i])
+                            }
+                            onDragEnd={(hz) => handleDragEnd(i, hz)}
                         />
                     ))}
-                </div>
-            </div>
-
-            {/* Actions */}
-            <div className="bass-actions">
-                {allTuned ? (
-                    <button
-                        className="bass-btn bass-btn--main"
-                        onClick={handleReset}
-                    >
-                        Rejouer
-                    </button>
-                ) : (
-                    <button className="bass-btn" onClick={handleReset}>
-                        Recommencer
-                    </button>
-                )}
-            </div>
-
-            {/* Legend */}
-            <div className="bass-legend">
-                <div className="bass-legend-item">
-                    <svg width="40" height="12">
-                        <line
-                            x1="0"
-                            y1="6"
-                            x2="40"
-                            y2="6"
-                            stroke="#e2a155"
-                            strokeWidth="2.5"
-                        />
-                    </svg>
-                    <span>Ta note</span>
-                </div>
-                <div className="bass-legend-item">
-                    <svg width="40" height="12">
-                        <line
-                            x1="0"
-                            y1="6"
-                            x2="40"
-                            y2="6"
-                            stroke="#4caf50"
-                            strokeWidth="3"
-                        />
-                    </svg>
-                    <span>Accordé</span>
                 </div>
             </div>
         </div>

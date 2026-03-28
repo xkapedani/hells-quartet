@@ -9,7 +9,7 @@
     padding: 2rem 1rem 4rem;
     gap: 1.2rem;
     min-height: 100vh;
-    background: #111;
+    background: #070709;
     color: #e8e8e8;
     font-family: "Segoe UI", system-ui, sans-serif;
 }
@@ -71,12 +71,6 @@
 .bass-progress-dot--tuned {
     color: #fff;
     transform: scale(1.05);
-}
-
-.bass-progress-text {
-    font-size: 0.82rem;
-    color: #777;
-    margin-left: 0.4rem;
 }
 
 /* ── Main area (gnomes + strings side by side) ────────────────────────────── */
@@ -392,31 +386,6 @@
     background: rgba(255, 255, 255, 0.12);
 }
 
-/* ── Legend ───────────────────────────────────────────────────────────────── */
-
-.bass-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: center;
-    max-width: 580px;
-    width: 100%;
-    padding-top: 1.2rem;
-    margin-top: 0.5rem;
-}
-
-.bass-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: 0.78rem;
-    color: #888;
-}
-
-.bass-legend-item svg {
-    flex-shrink: 0;
-}
-
 /* ═══════════════════════════════════════════════════════════════════════════
    Responsive
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -494,13 +463,5 @@
         width: 34px;
         height: 34px;
         font-size: 0.7rem;
-    }
-
-    .bass-legend {
-        gap: 0.8rem;
-    }
-
-    .bass-legend-item {
-        font-size: 0.72rem;
     }
 }
