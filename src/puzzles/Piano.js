@@ -1,10 +1,10 @@
-import react from "react";
+import React from "react";
+
+const publicPath = process.env.PUBLIC_URL;
 
 function Piano() {
     return (
-        <span style={{ fontSize: 24, fontWeight: "bold", color: "#333" }}>
-            Piano
-        </span>
+        <img src={`${publicPath}/images/mille_pattes_fache.png`} alt="piano" style={{ width: "100%" }} />
     );
 }
 
