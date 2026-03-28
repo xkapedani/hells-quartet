@@ -43,8 +43,8 @@ const CHARACTERS = [
     },
     {
         id: "pieuvre",
-        name: "Name",
-        subtitle: "Subtitle",
+        name: "Krak'n'roll",
+        subtitle: "apprendre le rythme",
         description: "Desc",
         image: "/images/pieuvre_triste_sans_fond.png",
         instrument: "Drums",
