@@ -241,7 +241,7 @@ function Drums() {
                             key={i}
                             src={done ? `${publicPath}/images/star-full.png` : `${publicPath}/images/star-empty.png`}
                             alt={done ? `Star ${i+1} full` : `Star ${i+1} empty`}
-                            style={{ width: 28, height: 28 }}
+                            style={{ width: 50, height: 50 }}
                         />
                     ))}
                 </div>
