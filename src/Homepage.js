@@ -28,7 +28,7 @@ const CHARACTERS = [
         instrument: "Contrebasse",
         component: Bass,
         ready: true,
-        stagePos: { bottom: "32%", left: "27%", width: "26%", zIndex: 1 },
+        stagePos: { bottom: "32%", left: "30%", width: "26%", zIndex: 5 },
     },
     {
         id: "millepattes",
