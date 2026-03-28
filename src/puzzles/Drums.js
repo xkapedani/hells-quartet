@@ -153,12 +153,37 @@ function Drums() {
         if (ok) {
             setMessage("Nice! You matched the rhythm.");
             if (currentExampleIndex !== null) {
-                setCompletedExamples((prev) => {
-                    const copy = [...prev];
-                    copy[currentExampleIndex] = true;
-                    if (copy.every(Boolean)) setPieuvreHappy(true);
-                    return copy;
-                });
+                    setCompletedExamples((prev) => {
+                        const copy = [...prev];
+                        copy[currentExampleIndex] = true;
+                        // if all completed, make pieuvre happy
+                        if (copy.every(Boolean)) {
+                            setPieuvreHappy(true);
+                        } else {
+                            // find next not-completed example, preferring the next index
+                            let next = -1;
+                            for (let j = currentExampleIndex + 1; j < copy.length; j++) {
+                                if (!copy[j]) {
+                                    next = j;
+                                    break;
+                                }
+                            }
+                            if (next === -1) {
+                                for (let j = 0; j < copy.length; j++) {
+                                    if (!copy[j]) {
+                                        next = j;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (next !== -1) {
+                                setCurrentExampleIndex(next);
+                                setPattern(examples[next]);
+                                setMessage(`Loaded example ${next + 1}`);
+                            }
+                        }
+                        return copy;
+                    });
             } else {
                 setPieuvreHappy(true);
             }
@@ -210,22 +235,16 @@ function Drums() {
 
             <div style={{ textAlign: "center", minHeight: 24 }}>{message}</div>
 
-            <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-                {examples.map((ex, i) => (
-                    <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <button
-                            onClick={() => { setPattern(ex); setCurrentExampleIndex(i); setMessage(`Loaded example ${i+1}`); }}
-                            disabled={cooldown}
-                            style={{ padding: "6px 10px", background: currentExampleIndex===i ? "#2b6" : undefined }}
-                        >
-                            Load Example {i+1}
-                        </button>
-                        <div style={{ fontSize: 12, marginTop: 6 }}>
-                            {completedExamples[i] ? "✅ Completed" : ""}
-                        </div>
-                    </div>
-                ))}
-            </div>
+                <div style={{ display: "flex", gap: 10, marginTop: 6, alignItems: "center" }}>
+                    {completedExamples.map((done, i) => (
+                        <img
+                            key={i}
+                            src={done ? `${publicPath}/images/star-full.png` : `${publicPath}/images/star-empty.png`}
+                            alt={done ? `Star ${i+1} full` : `Star ${i+1} empty`}
+                            style={{ width: 28, height: 28 }}
+                        />
+                    ))}
+                </div>
 
                 <div
                     onClick={onDrumClick}
