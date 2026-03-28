@@ -10,8 +10,8 @@ const PUBLIC = process.env.PUBLIC_URL || "";
 const CHARACTERS = [
     {
         id: "cerbere",
-        name: "Name",
-        subtitle: "Subtitle",
+        name: "Cerbere",
+        subtitle: "La musique se construit ensemble !",
         description: "Desc",
         image: "/images/cerbere_triste.png",
         instrument: "Winds",
@@ -21,8 +21,8 @@ const CHARACTERS = [
     },
     {
         id: "gnomes",
-        name: "Name",
-        subtitle: "Subtitle",
+        name: "Contre & Basse",
+        subtitle: "Accorder les désaccords !",
         description: "Desc",
         image: "/images/gnomes_faches.png",
         instrument: "Bass",
@@ -32,8 +32,8 @@ const CHARACTERS = [
     },
     {
         id: "millepattes",
-        name: "Name",
-        subtitle: "Subtitle",
+        name: "Millody",
+        subtitle: "Veillez à ne pas s'emmêller les pattes !",
         description: "Desc",
         image: "/images/mille_pattes_fache.png",
         instrument: "Piano",
@@ -43,8 +43,8 @@ const CHARACTERS = [
     },
     {
         id: "pieuvre",
-        name: "Krak'n'roll",
-        subtitle: "apprendre le rythme",
+        name: "Krak'n'Roll",
+        subtitle: "Ne pas perdre le rythme !",
         description: "Desc",
         image: "/images/pieuvre_triste_sans_fond.png",
         instrument: "Drums",
