@@ -203,15 +203,16 @@ export default function Homepage() {
             <section className="hp-hero">
                 <div className="hp-hero-bg" />
 
-                <div className="hp-hero-content">
-                    <h1 className="hp-hero-title">
-                        <span className="hp-hero-hell">Quartet</span>
-                        <br />
-                        <span className="hp-hero-quartet">de l'Enfer</span>
-                    </h1>
-                    <p className="hp-hero-sub">...</p>
+                <div className="hp-hero-title-box">
+                    <div className="hp-hero-content">
+                        <h1 className="hp-hero-title">
+                            <span className="hp-hero-hell">Quartet</span>
+                            <br />
+                            <span className="hp-hero-quartet">de l'Enfer</span>
+                        </h1>
+                    </div>
                 </div>
-
+                
                 <div
                     className={
                         "hp-arrows" +
