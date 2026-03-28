@@ -251,11 +251,7 @@ function Drums() {
                     role="button"
                     aria-label="drum pad"
                     style={{
-                        width: 260,
-                        height: 140,
                         borderRadius: 12,
-                        background: "radial-gradient(circle at 30% 20%, #fff7, #0006)",
-                        boxShadow: "inset 0 -6px 18px rgba(0,0,0,0.3), 0 6px 18px rgba(0,0,0,0.15)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -263,10 +259,12 @@ function Drums() {
                         userSelect: "none",
                     }}
                 >
-                    <div style={{ textAlign: "center", color: "#fff" }}>
-                        <div style={{ fontSize: 20, fontWeight: 700 }}>{recording ? "Play!" : "Drum"}</div>
-                        <div style={{ fontSize: 12, opacity: 0.9 }}>{recording ? "Click to record rhythm" : "Click the drum to start reproducing"}</div>
-                    </div>
+                    {/* image of drum-full, when on cooldown image of drum-empty */}
+                    <img
+                        src={cooldown ? `${publicPath}/images/drum-empty.png` : `${publicPath}/images/drum-full.png`}
+                        alt="drum"
+                        style={{ width: 120, height: "auto", pointerEvents: "none" }}
+                    />
                 </div>
             </div>
         </div>
