@@ -70,14 +70,19 @@ export default function Homepage() {
     const [musicStarted, setMusicStarted] = useState(false);
 
     const [hoveredId, setHoveredId] = useState(null);
-    const [completedPuzzles, setCompletedPuzzles] = useState({ drums: false });
+    const [completedPuzzles, setCompletedPuzzles] = useState({
+        drums: false,
+        bass: false,
+    });
 
     useEffect(() => {
         try {
-            const done = localStorage.getItem("puzzle-drums-completed") === "1";
-            setCompletedPuzzles({ drums: done });
+            const drums =
+                localStorage.getItem("puzzle-drums-completed") === "1";
+            const bass = localStorage.getItem("puzzle-bass-completed") === "1";
+            setCompletedPuzzles({ drums, bass });
         } catch (e) {
-            setCompletedPuzzles({ drums: false });
+            setCompletedPuzzles({ drums: false, bass: false });
         }
     }, []);
 
@@ -178,10 +183,12 @@ export default function Homepage() {
         setOverlayVisible(false);
         // refresh completed puzzle flags immediately so homepage reflects changes
         try {
-            const done = localStorage.getItem("puzzle-drums-completed") === "1";
-            setCompletedPuzzles((s) => ({ ...s, drums: done }));
+            const drums =
+                localStorage.getItem("puzzle-drums-completed") === "1";
+            const bass = localStorage.getItem("puzzle-bass-completed") === "1";
+            setCompletedPuzzles({ drums, bass });
         } catch (e) {
-            setCompletedPuzzles((s) => ({ ...s, drums: false }));
+            setCompletedPuzzles({ drums: false, bass: false });
         }
         setTimeout(() => {
             setShowOverlay(false);
@@ -267,7 +274,10 @@ export default function Homepage() {
                             src={
                                 char.id === "pieuvre" && completedPuzzles.drums
                                     ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
-                                    : `${PUBLIC}${char.image}`
+                                    : char.id === "gnomes" &&
+                                        completedPuzzles.bass
+                                      ? `${PUBLIC}/images/gnomes_heureux.png`
+                                      : `${PUBLIC}${char.image}`
                             }
                             alt={char.name}
                             className="hp-char-img"
@@ -371,7 +381,8 @@ export default function Homepage() {
                         <div className="hp-overlay-bar-info">
                             <img
                                 src={
-                                    selectedChar.id === "pieuvre" && completedPuzzles.drums
+                                    selectedChar.id === "pieuvre" &&
+                                    completedPuzzles.drums
                                         ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
                                         : `${PUBLIC}${selectedChar.image}`
                                 }
