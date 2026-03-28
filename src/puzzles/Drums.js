@@ -116,6 +116,9 @@ function Drums() {
             setMessage("Recording... now click for each beat to match the rhythm.");
             // feedback for start
             PlayFromFile("one-time-drum.mp3");
+            // spawn initial note particle at drum on start
+            const drumPosStart = getRelativeCenter(drumImgRef);
+            particlesRef.current && particlesRef.current.spawnAt(drumPosStart.x, drumPosStart.y);
             return;
         }
         // recording: record click time relative to start
