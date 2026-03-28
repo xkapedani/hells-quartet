@@ -14,11 +14,11 @@ function Piano() {
                 backgroundRepeat: "no-repeat",
             }}
         >
-        <img
-            src={`${PUBLIC}/images/mille_pattes_fache.png`}
-            alt="piano"
-            style={{ width: "100%" }}
-        />
+            <h1 className="trio-title">Retrouve la note</h1>
+            <img
+                src={`${PUBLIC}/images/mille_pattes_fache.png`}
+                alt="piano"
+            />
         </div>
     );
 }
