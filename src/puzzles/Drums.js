@@ -54,6 +54,15 @@ function Drums() {
         return undefined;
     }, [autoPlayNext, pattern]);
 
+    // When navigating to this component (e.g., from the homepage), automatically
+    // start the first melody after a short delay so the user sees it.
+    useEffect(() => {
+        const id = setTimeout(() => {
+            setAutoPlayNext(true);
+        }, 2000);
+        return () => clearTimeout(id);
+    }, []);
+
 
     // play a sample sound file at given scheduled ms
     function playSampleAt(time) {
@@ -321,7 +330,7 @@ function Drums() {
                         objectFit: "cover",
                         display: "block",
                         margin: "0 auto",
-                        filter: pieuvreHappy ? "hue-rotate(100deg) saturate(140%)" : "none",
+                        filter: pieuvreHappy ? "brightness(1.05) saturate(1.2) drop-shadow(0 12px 36px rgba(200,50,50,0.25))" : "none",
                         transition: "filter 400ms ease, transform 400ms ease",
                         transform: pieuvreHappy ? "scale(1.05)" : "scale(1)",
                         cursor: (playing || pattern.length===0 || cooldown) ? "not-allowed" : "pointer",
