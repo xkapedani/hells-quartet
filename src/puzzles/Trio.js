@@ -4,23 +4,25 @@ import { playFile, cancelSequence, stopCurrent } from "../Player";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
-// Set to true to show the clickable zone outlines (useful for debugging/positioning)
 const SHOW_ZONES = false;
 
 const INSTRUMENTS = [
     {
         id: "saxophone",
         label: "Saxophone",
+        color: "#c8860a",
         file: "cerbere-game/cerbere-game-Tenor_Saxophone.mp3",
     },
     {
         id: "trumpet",
-        label: "Trumpet",
+        label: "Trompette",
+        color: "#b83232",
         file: "cerbere-game/cerbere-game-Bb_Trumpet.mp3",
     },
     {
         id: "clarinet",
-        label: "Clarinet",
+        label: "Clarinette",
+        color: "#2a6db5",
         file: "cerbere-game/cerbere-game-Bb_Clarinet.mp3",
     },
 ];
@@ -28,15 +30,13 @@ const INSTRUMENTS = [
 const LEVEL2_FILE = "cerbere-game/cerbere-game-lvl2.MP3";
 const LEVEL3_FILE = "cerbere-game/cerbere-game-lvl3.MP3";
 
-// Left head = saxophone, center = trumpet, right = clarinet
 const ZONES = [
     { id: "saxophone", left: "2%", top: "5%", width: "32%", height: "90%" },
     { id: "trumpet", left: "31%", top: "0%", width: "37%", height: "90%" },
     { id: "clarinet", left: "65%", top: "5%", width: "35%", height: "90%" },
 ];
 
-// Delays (ms)
-const CORRECT_ADVANCE_DELAY = 1200; // pause after "Correct!" before moving to next round
+const CORRECT_ADVANCE_DELAY = 1200;
 const LEVEL_ADVANCE_DELAY = 1800; // pause after last round before showing the Next button
 const DONE_BUTTON_DELAY = 1200; // pause after level completion before showing Finish/Next
 const REPLAY_SHOW_DELAY = 800; // pause before the Replay button appears
@@ -47,7 +47,7 @@ function getInstrument(id) {
 
 export default function Trio() {
     const [step, setStep] = useState("explore");
-    const [feedback, setFeedback] = useState("");
+    const [feedback, setFeedback] = useState({ icon: "", type: "neutral" });
     const [playingId, setPlayingId] = useState(null);
 
     // Level 1
@@ -73,8 +73,6 @@ export default function Trio() {
     const feedbackTimer = useRef(null);
     const buttonTimers = useRef([]);
 
-    // ── Timer helpers ──────────────────────────────────────────────────────────
-
     function clearButtonTimers() {
         buttonTimers.current.forEach(clearTimeout);
         buttonTimers.current = [];
@@ -92,8 +90,6 @@ export default function Trio() {
         setShowDoneButton(false);
     }
 
-    // ── Audio ──────────────────────────────────────────────────────────────────
-
     function playInstrument(id) {
         const inst = getInstrument(id);
         if (!inst) return;
@@ -101,15 +97,14 @@ export default function Trio() {
         playFile(inst.file, () => setPlayingId(null));
     }
 
-    // ── Feedback ───────────────────────────────────────────────────────────────
-
-    function showFeedback(msg, duration = 4000) {
+    function showFeedback(icon, type, duration = 4000) {
         clearTimeout(feedbackTimer.current);
-        setFeedback(msg);
-        feedbackTimer.current = setTimeout(() => setFeedback(""), duration);
+        setFeedback({ icon, type });
+        feedbackTimer.current = setTimeout(
+            () => setFeedback({ icon: "", type: "neutral" }),
+            duration,
+        );
     }
-
-    // ── Step transitions ───────────────────────────────────────────────────────
 
     function startLevel1() {
         cancelSequence();
@@ -191,13 +186,10 @@ export default function Trio() {
         setL3Done(false);
     }
 
-    // ── Click handlers ─────────────────────────────────────────────────────────
-
     function handleClick(id) {
         if (step === "explore") {
-            const inst = getInstrument(id);
             playInstrument(id);
-            showFeedback(`${inst.label}`, 5000);
+            showFeedback("♪", "neutral", 4000);
         }
 
         if (step === "level1") {
@@ -206,24 +198,18 @@ export default function Trio() {
                 setL1Done(true);
                 const isLast = l1Round === INSTRUMENTS.length - 1;
                 if (!isLast) {
-                    // Auto-advance to next round
-                    showFeedback(
-                        `Correct! (${l1Round + 1}/${INSTRUMENTS.length})`,
-                        CORRECT_ADVANCE_DELAY,
-                    );
+                    showFeedback("✓", "correct", CORRECT_ADVANCE_DELAY);
                     const t = setTimeout(
                         () => advanceL1Round(l1Queue, l1Round),
                         CORRECT_ADVANCE_DELAY,
                     );
                     buttonTimers.current.push(t);
                 } else {
-                    // Last round — show feedback then reveal Next button
-                    showFeedback("Correct!", LEVEL_ADVANCE_DELAY);
+                    showFeedback("✓", "correct", LEVEL_ADVANCE_DELAY);
                     scheduleButton(setShowNextLevel, LEVEL_ADVANCE_DELAY);
                 }
             } else {
-                const inst = getInstrument(l1Target.id);
-                showFeedback(`Not quite. ${inst.hint}`);
+                showFeedback("✗", "wrong");
                 setTimeout(() => playInstrument(l1Target.id), 800);
             }
         }
@@ -232,9 +218,7 @@ export default function Trio() {
             if (l2Done) return;
             const targetIds = l2Targets.map((t) => t.id);
             if (!targetIds.includes(id)) {
-                showFeedback(
-                    `Not one of them. ${l2Targets.map((t) => t.hint).join(" / ")}`,
-                );
+                showFeedback("✗", "wrong");
                 return;
             }
             if (l2Found.includes(id)) return;
@@ -242,10 +226,10 @@ export default function Trio() {
             setL2Found(next);
             if (next.length === 2) {
                 setL2Done(true);
-                showFeedback("You found both!", DONE_BUTTON_DELAY);
+                showFeedback("✓", "correct", DONE_BUTTON_DELAY);
                 scheduleButton(setShowDoneButton, DONE_BUTTON_DELAY);
             } else {
-                showFeedback("One down, find the other.");
+                showFeedback("…", "neutral");
             }
         }
 
@@ -256,10 +240,10 @@ export default function Trio() {
             setL3Found(next);
             if (next.length === 2) {
                 setL3Done(true);
-                showFeedback("You found both!", DONE_BUTTON_DELAY);
+                showFeedback("✓", "correct", DONE_BUTTON_DELAY);
                 scheduleButton(setShowDoneButton, DONE_BUTTON_DELAY);
             } else {
-                showFeedback("One down, find the other.");
+                showFeedback("…", "neutral");
             }
         }
     }
@@ -275,8 +259,6 @@ export default function Trio() {
             playFile(LEVEL3_FILE);
         }
     }
-
-    // ── Render ─────────────────────────────────────────────────────────────────
 
     const isComplete = step === "complete";
 
@@ -325,7 +307,9 @@ export default function Trio() {
                     ))}
             </div>
 
-            {feedback && <p className="trio-feedback">{feedback}</p>}
+            <p className={`trio-feedback trio-feedback--${feedback.type}`}>
+                {feedback.icon}
+            </p>
 
             <div className="trio-actions">
                 {/* Replay — appears shortly after audio starts */}
@@ -393,7 +377,6 @@ export default function Trio() {
                 {INSTRUMENTS.map((inst) => (
                     <div key={inst.id} className="trio-legend-item">
                         <span className="trio-legend-name">{inst.label}</span>
-                        <span className="trio-legend-hint">{inst.hint}</span>
                     </div>
                 ))}
             </div>
