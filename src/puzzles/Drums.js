@@ -82,7 +82,7 @@ function Drums({ onClose }) {
     useEffect(() => {
         const id = setTimeout(() => {
             setAutoPlayNext(true);
-        }, 2000);
+        }, 10);
         return () => clearTimeout(id);
     }, []);
 
@@ -157,29 +157,33 @@ function Drums({ onClose }) {
 
     
 
-    async function playPattern() {
+    async function playPattern(startDelay = 2000) {
         if (!pattern || pattern.length === 0) return;
         setPlaying(true);
         playingTimeoutsRef.current.forEach((id) => clearTimeout(id));
         playingTimeoutsRef.current = [];
+        // wait a short moment before starting playback so the user
+        // can see the octopus / UI settle; default is 2000ms but callers
+        // can override (e.g., pass 0 when user manually clicks the octopus)
+        const START_DELAY = startDelay;
         // schedule visual and audio for each beat
         pattern.forEach((t, i) => {
             // schedule audio sample
-            playSampleAt(t);
+            playSampleAt(t + START_DELAY);
             // schedule particle spawn at same time
             const spawnId = setTimeout(() => {
                 // compute position at spawn time (in case layout changed)
                 const octoPos = getRelativeCenter(octopusRef);
                 const jitterX = (Math.random() - 0.5) * 40;
                 particlesRef.current && particlesRef.current.spawnAt(octoPos.x + jitterX, octoPos.y);
-            }, t);
+            }, t + START_DELAY);
             playingTimeoutsRef.current.push(spawnId);
             // schedule visual highlight
-            const id = setTimeout(() => setActiveBeat(i), t);
+            const id = setTimeout(() => setActiveBeat(i), t + START_DELAY);
             playingTimeoutsRef.current.push(id);
         });
         // clear after last beat
-        const last = pattern[pattern.length - 1] + 300;
+        const last = pattern[pattern.length - 1] + 300 + START_DELAY;
         const clearId = setTimeout(() => {
             setPlaying(false);
             setActiveBeat(-1);
@@ -189,24 +193,26 @@ function Drums({ onClose }) {
     }
 
     // play a given pattern array immediately (does not rely on state pattern)
-    function playPatternWith(pat) {
+    // play a given pattern array immediately (does not rely on state pattern)
+    function playPatternWith(pat, startDelay = 2000) {
         if (!pat || pat.length === 0) return;
         setPattern(pat);
         setPlaying(true);
         playingTimeoutsRef.current.forEach((id) => clearTimeout(id));
         playingTimeoutsRef.current = [];
+        const START_DELAY = startDelay; // ms
         pat.forEach((t, i) => {
-            playSampleAt(t);
+            playSampleAt(t + START_DELAY);
             const spawnId = setTimeout(() => {
                 const octoPos = getRelativeCenter(octopusRef);
                 const jitterX = (Math.random() - 0.5) * 40;
                 particlesRef.current && particlesRef.current.spawnAt(octoPos.x + jitterX, octoPos.y);
-            }, t);
+            }, t + START_DELAY);
             playingTimeoutsRef.current.push(spawnId);
-            const id = setTimeout(() => setActiveBeat(i), t);
+            const id = setTimeout(() => setActiveBeat(i), t + START_DELAY);
             playingTimeoutsRef.current.push(id);
         });
-        const last = pat[pat.length - 1] + 300;
+        const last = pat[pat.length - 1] + 300 + START_DELAY;
         const clearId = setTimeout(() => {
             setPlaying(false);
             setActiveBeat(-1);
@@ -405,7 +411,7 @@ function Drums({ onClose }) {
                     ref={octopusRef}
                     src={pieuvreHappy ? `${publicPath}/images/pieuvre_heureuse_2.png` : `${publicPath}/images/pieuvre_triste_sans_fond.png`}
                     alt="pieuvre"
-                    onClick={() => { if (!playing && pattern.length>0 && !cooldown) playPattern(); }}
+                    onClick={() => { if (!playing && pattern.length>0 && !cooldown) playPattern(0); }}
                     role="button"
                     tabIndex={0}
                     // crop image to be square
