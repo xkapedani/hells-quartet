@@ -28,6 +28,7 @@ function Drums() {
     const [cooldown, setCooldown] = useState(false);
     const recordStartRef = useRef(0);
     const publicPath = process.env.PUBLIC_URL;
+    const [autoPlayNext, setAutoPlayNext] = useState(false);
 
     useEffect(() => {
         // set initial pattern from first example
@@ -40,6 +41,18 @@ function Drums() {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (autoPlayNext && pattern && pattern.length > 0) {
+            // small delay to allow DOM/layout settle
+            const id = setTimeout(() => {
+                setAutoPlayNext(false);
+                playPattern();
+            }, 80);
+            return () => clearTimeout(id);
+        }
+        return undefined;
+    }, [autoPlayNext, pattern]);
 
 
     // play a sample sound file at given scheduled ms
@@ -86,6 +99,33 @@ function Drums() {
         });
         // clear after last beat
         const last = pattern[pattern.length - 1] + 300;
+        const clearId = setTimeout(() => {
+            setPlaying(false);
+            setActiveBeat(-1);
+            setMessage("Now reproduce the rhythm by clicking the drum below.");
+        }, last);
+        playingTimeoutsRef.current.push(clearId);
+    }
+
+    // play a given pattern array immediately (does not rely on state pattern)
+    function playPatternWith(pat) {
+        if (!pat || pat.length === 0) return;
+        setPattern(pat);
+        setPlaying(true);
+        playingTimeoutsRef.current.forEach((id) => clearTimeout(id));
+        playingTimeoutsRef.current = [];
+        pat.forEach((t, i) => {
+            playSampleAt(t);
+            const spawnId = setTimeout(() => {
+                const octoPos = getRelativeCenter(octopusRef);
+                const jitterX = (Math.random() - 0.5) * 40;
+                particlesRef.current && particlesRef.current.spawnAt(octoPos.x + jitterX, octoPos.y);
+            }, t);
+            playingTimeoutsRef.current.push(spawnId);
+            const id = setTimeout(() => setActiveBeat(i), t);
+            playingTimeoutsRef.current.push(id);
+        });
+        const last = pat[pat.length - 1] + 300;
         const clearId = setTimeout(() => {
             setPlaying(false);
             setActiveBeat(-1);
@@ -186,50 +226,59 @@ function Drums() {
         if (ok) {
             setMessage("Nice! You matched the rhythm.");
             if (currentExampleIndex !== null) {
-                    setCompletedExamples((prev) => {
-                        const copy = [...prev];
-                        copy[currentExampleIndex] = true;
-                        // if all completed, make pieuvre happy
-                        if (copy.every(Boolean)) {
-                            setPieuvreHappy(true);
-                        } else {
-                            // find next not-completed example, preferring the next index
-                            let next = -1;
-                            for (let j = currentExampleIndex + 1; j < copy.length; j++) {
-                                if (!copy[j]) {
-                                    next = j;
-                                    break;
-                                }
-                            }
-                            if (next === -1) {
-                                for (let j = 0; j < copy.length; j++) {
-                                    if (!copy[j]) {
-                                        next = j;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (next !== -1) {
-                                setCurrentExampleIndex(next);
-                                setPattern(examples[next]);
-                                setMessage(`Loaded example ${next + 1}`);
+                // mark current completed and compute next candidate synchronously
+                const copy = [...completedExamples];
+                copy[currentExampleIndex] = true;
+                setCompletedExamples(copy);
+                // if all completed, make pieuvre happy
+                if (copy.every(Boolean)) {
+                    setPieuvreHappy(true);
+                } else {
+                    // find next not-completed example, preferring the next index
+                    let next = -1;
+                    for (let j = currentExampleIndex + 1; j < copy.length; j++) {
+                        if (!copy[j]) {
+                            next = j;
+                            break;
+                        }
+                    }
+                    if (next === -1) {
+                        for (let j = 0; j < copy.length; j++) {
+                            if (!copy[j]) {
+                                next = j;
+                                break;
                             }
                         }
-                        return copy;
-                    });
+                    }
+                    if (next !== -1) {
+                        setCurrentExampleIndex(next);
+                        // immediately play the computed next pattern to avoid race on setState
+                        const nextPattern = examples[next];
+                        setPattern(nextPattern);
+                        setMessage(`Loaded example ${next + 1}`);
+                        // play next pattern right away using provided array
+                        playPatternWith(nextPattern);
+                    }
+                }
             } else {
                 setPieuvreHappy(true);
             }
             // celebration: spawn heart particles around octopus
             const octoPosSuccess = getRelativeCenter(octopusRef);
-            particlesRef.current && particlesRef.current.spawnBurst(octoPosSuccess.x, octoPosSuccess.y, 10, { src: `${publicPath}/images/heart.png`, radius: 200, size: 48, lifetime: 4000 });
+            particlesRef.current && particlesRef.current.spawnBurst(octoPosSuccess.x, octoPosSuccess.y, 10, { src: `${publicPath}/images/heart.png`, radius: 200, size: 48, lifetime: 6000 });
+            // if there was no next example selection above, still try to autoplay next pattern
+            if (!autoPlayNext) setAutoPlayNext(true);
         } else {
             const hint = diffs.length ? ` diffs: ${diffs.map((d) => Math.round(d)).join(",")}` : "";
             setMessage("Not quite — try again or listen once more." + hint);
             setPieuvreHappy(false);
             // negative feedback: spawn thunder particles around octopus
             const octoPosFail = getRelativeCenter(octopusRef);
-            particlesRef.current && particlesRef.current.spawnBurst(octoPosFail.x, octoPosFail.y, 10, { src: `${publicPath}/images/thunder.png`, radius: 200, size: 56, lifetime: 4000 });
+            particlesRef.current && particlesRef.current.spawnBurst(octoPosFail.x, octoPosFail.y, 10, { src: `${publicPath}/images/thunder.png`, radius: 200, size: 56, lifetime: 6000 });
+            // after thunder, replay the same melody (short delay so thunder is visible)
+            setTimeout(() => {
+                playPattern();
+            }, 500);
         }
         setRecording(false);
         // cooldown for 2s before next attempt
