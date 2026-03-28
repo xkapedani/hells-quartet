@@ -12,19 +12,16 @@ const INSTRUMENTS = [
         id: "saxophone",
         label: "Saxophone",
         file: "cerbere-game/cerbere-game-Tenor_Saxophone.mp3",
-        hint: "Listen for a warm, breathy tone.",
     },
     {
         id: "trumpet",
         label: "Trumpet",
         file: "cerbere-game/cerbere-game-Bb_Trumpet.mp3",
-        hint: "Listen for a bright, piercing brass sound.",
     },
     {
         id: "clarinet",
         label: "Clarinet",
         file: "cerbere-game/cerbere-game-Bb_Clarinet.mp3",
-        hint: "Listen for a smooth, woody tone.",
     },
 ];
 
@@ -200,7 +197,7 @@ export default function Trio() {
         if (step === "explore") {
             const inst = getInstrument(id);
             playInstrument(id);
-            showFeedback(`${inst.label} — ${inst.hint}`, 5000);
+            showFeedback(`${inst.label}`, 5000);
         }
 
         if (step === "level1") {
@@ -285,7 +282,7 @@ export default function Trio() {
 
     const instructions = {
         explore: "Click on each head to hear the instrument it plays.",
-        level1: `Round ${l1Round + 1} of ${INSTRUMENTS.length} — One instrument is playing. Click the right head.`,
+        level1: `Round ${l1Round + 1} of ${INSTRUMENTS.length}  One instrument is playing. Click the right head.`,
         level2: "Two instruments are playing. Find them both.",
         level3: "Two instruments are playing. Find them both.",
         complete: "You can now tell all three apart.",
