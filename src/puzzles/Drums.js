@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PlayFromFile } from "../Player";
+import Particles from "./Particles";
 
 function Drums() {
     const [pattern, setPattern] = useState([]); // cumulative times in ms
@@ -19,6 +20,10 @@ function Drums() {
     const [completedExamples, setCompletedExamples] = useState([false, false, false]);
     const [activeBeat, setActiveBeat] = useState(-1);
     const playingTimeoutsRef = useRef([]);
+    const containerRef = useRef(null);
+    const octopusRef = useRef(null);
+    const drumImgRef = useRef(null);
+    const particlesRef = useRef(null);
     const MATCH_WINDOW = 200; // ms before/after for matching
     const [cooldown, setCooldown] = useState(false);
     const recordStartRef = useRef(0);
@@ -45,14 +50,36 @@ function Drums() {
         playingTimeoutsRef.current.push(id);
     }
 
+    function getRelativeCenter(ref) {
+        const container = containerRef.current;
+        const el = ref && ref.current;
+        if (!container || !el) return { x: 0, y: 0 };
+        const crect = container.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
+        const x = rect.left - crect.left + rect.width / 2;
+        const y = rect.top - crect.top + rect.height / 2;
+        return { x, y };
+    }
+
+    
+
     async function playPattern() {
         if (!pattern || pattern.length === 0) return;
+        setPlaying(true);
         playingTimeoutsRef.current.forEach((id) => clearTimeout(id));
         playingTimeoutsRef.current = [];
         // schedule visual and audio for each beat
         pattern.forEach((t, i) => {
             // schedule audio sample
             playSampleAt(t);
+            // schedule particle spawn at same time
+            const spawnId = setTimeout(() => {
+                // compute position at spawn time (in case layout changed)
+                const octoPos = getRelativeCenter(octopusRef);
+                const jitterX = (Math.random() - 0.5) * 40;
+                particlesRef.current && particlesRef.current.spawnAt(octoPos.x + jitterX, octoPos.y);
+            }, t);
+            playingTimeoutsRef.current.push(spawnId);
             // schedule visual highlight
             const id = setTimeout(() => setActiveBeat(i), t);
             playingTimeoutsRef.current.push(id);
@@ -109,6 +136,9 @@ function Drums() {
         });
         // also play click feedback
         PlayFromFile("one-time-drum.mp3");
+        // spawn a note particle on the drum
+        const drumPos = getRelativeCenter(drumImgRef);
+        particlesRef.current && particlesRef.current.spawnAt(drumPos.x, drumPos.y);
     }
 
     function computeIntervals(times) {
@@ -199,9 +229,11 @@ function Drums() {
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", height: "100%", padding: 20, boxSizing: "border-box", justifyContent: "center" }}>
+        <div ref={containerRef} style={{ position: "relative", display: "flex", flexDirection: "row", alignItems: "center", height: "100%", padding: 20, boxSizing: "border-box", justifyContent: "center" }}>
+            <Particles ref={particlesRef} publicPath={publicPath} />
             <div style={{ marginTop: 8, textAlign: "center" }}>
                 <img
+                    ref={octopusRef}
                     src={pieuvreHappy ? `${publicPath}/images/pieuvre_triste_sans_fond.png` : `${publicPath}/images/pieuvre_triste_sans_fond.png`}
                     alt="pieuvre"
                     onClick={() => { if (!playing && pattern.length>0 && !cooldown) playPattern(); }}
@@ -261,6 +293,7 @@ function Drums() {
                 >
                     {/* image of drum-full, when on cooldown image of drum-empty */}
                     <img
+                        ref={drumImgRef}
                         src={cooldown ? `${publicPath}/images/drum-empty.png` : `${publicPath}/images/drum-full.png`}
                         alt="drum"
                         style={{ width: 420, height: "auto", pointerEvents: "none" }}
