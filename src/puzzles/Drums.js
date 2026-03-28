@@ -287,7 +287,24 @@ function Drums() {
     }
 
     return (
-        <div ref={containerRef} style={{ position: "relative", display: "flex", flexDirection: "row", alignItems: "center", height: "100%", padding: 20, boxSizing: "border-box", justifyContent: "center" }}>
+        <div
+            ref={containerRef}
+            style={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                height: "100%",
+                padding: 20,
+                boxSizing: "border-box",
+                justifyContent: "center",
+                backgroundImage: `url(${publicPath}/images/scene.png)`,
+                backgroundAttachment: "fixed",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+            }}
+        >
             <Particles ref={particlesRef} publicPath={publicPath} />
             <div style={{ marginTop: 8, textAlign: "center" }}>
                 <img
