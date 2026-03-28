@@ -309,15 +309,16 @@ function Drums() {
             <div style={{ marginTop: 8, textAlign: "center" }}>
                 <img
                     ref={octopusRef}
-                    src={pieuvreHappy ? `${publicPath}/images/pieuvre_triste_sans_fond.png` : `${publicPath}/images/pieuvre_triste_sans_fond.png`}
+                    src={pieuvreHappy ? `${publicPath}/images/pieuvre_heureuse_2.png` : `${publicPath}/images/pieuvre_triste_sans_fond.png`}
                     alt="pieuvre"
                     onClick={() => { if (!playing && pattern.length>0 && !cooldown) playPattern(); }}
                     role="button"
                     tabIndex={0}
+                    // crop image to be square
                     style={{
-                        width: 1040,
-                        height: "auto",
-                        objectFit: "contain",
+                        width: 740,
+                        height: 640,
+                        objectFit: "cover",
                         display: "block",
                         margin: "0 auto",
                         filter: pieuvreHappy ? "hue-rotate(100deg) saturate(140%)" : "none",
@@ -346,7 +347,7 @@ function Drums() {
                             key={i}
                             src={done ? `${publicPath}/images/star-full.png` : `${publicPath}/images/star-empty.png`}
                             alt={done ? `Star ${i+1} full` : `Star ${i+1} empty`}
-                            style={{ width: 50, height: 50 }}
+                            style={{ width: 100, height: 100 }}
                         />
                     ))}
                 </div>
