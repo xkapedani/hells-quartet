@@ -274,8 +274,6 @@ function Drums() {
                 }}
             >
 
-            <div style={{ textAlign: "center", minHeight: 24 }}>{message}</div>
-
                 <div style={{ display: "flex", gap: 10, marginTop: 6, alignItems: "center" }}>
                     {completedExamples.map((done, i) => (
                         <img
@@ -305,7 +303,7 @@ function Drums() {
                         ref={drumImgRef}
                         src={cooldown ? `${publicPath}/images/drum-empty.png` : `${publicPath}/images/drum-full.png`}
                         alt="drum"
-                        style={{ width: 420, height: "auto", pointerEvents: "none" }}
+                        style={{ width: 620, height: "auto", pointerEvents: "none" }}
                     />
                 </div>
             </div>
