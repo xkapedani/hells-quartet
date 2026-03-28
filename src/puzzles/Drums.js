@@ -220,10 +220,16 @@ function Drums() {
             } else {
                 setPieuvreHappy(true);
             }
+            // celebration: spawn heart particles around octopus
+            const octoPosSuccess = getRelativeCenter(octopusRef);
+            particlesRef.current && particlesRef.current.spawnBurst(octoPosSuccess.x, octoPosSuccess.y, 10, { src: `${publicPath}/images/heart.png`, radius: 200, size: 48, lifetime: 4000 });
         } else {
             const hint = diffs.length ? ` diffs: ${diffs.map((d) => Math.round(d)).join(",")}` : "";
             setMessage("Not quite — try again or listen once more." + hint);
             setPieuvreHappy(false);
+            // negative feedback: spawn thunder particles around octopus
+            const octoPosFail = getRelativeCenter(octopusRef);
+            particlesRef.current && particlesRef.current.spawnBurst(octoPosFail.x, octoPosFail.y, 10, { src: `${publicPath}/images/thunder.png`, radius: 200, size: 56, lifetime: 4000 });
         }
         setRecording(false);
         // cooldown for 2s before next attempt
