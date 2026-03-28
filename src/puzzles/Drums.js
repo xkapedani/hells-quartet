@@ -175,7 +175,7 @@ function Drums({ onClose }) {
         // wait a short moment before starting playback so the user
         // can see the octopus / UI settle; default is 2000ms but callers
         // can override (e.g., pass 0 when user manually clicks the octopus)
-        const START_DELAY = startDelay;
+        const START_DELAY = 2000;
         // schedule visual and audio for each beat
         pattern.forEach((t, i) => {
             // schedule audio sample
