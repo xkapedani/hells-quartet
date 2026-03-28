@@ -263,16 +263,16 @@ export default function Trio() {
     const isComplete = step === "complete";
 
     const instructions = {
-        explore: "Click on each head to hear the instrument it plays.",
-        level1: `Round ${l1Round + 1} of ${INSTRUMENTS.length}  One instrument is playing. Click the right head.`,
-        level2: "Two instruments are playing. Find them both.",
-        level3: "Two instruments are playing. Find them both.",
-        complete: "You can now tell all three apart.",
+        explore: "Clique sur chaque tête pour entendre l'instrument qui est joué.",
+        level1: `Tour ${l1Round + 1} sur ${INSTRUMENTS.length}  Un instrument est en train de jouer. Clique sur la bonne tête.`,
+        level2: "Deux instruments sont en train de jouer. Trouve-les tous les deux.",
+        level3: "Deux instruments sont en train de jouer. Trouve-les tous les deux.",
+        complete: "Tu peux maintenant les différencier tous les trois.",
     };
 
     return (
         <div className="trio">
-            <h1 className="trio-title">The Three Instruments</h1>
+            <h1 className="trio-title">Les Trois Instruments</h1>
             <p className="trio-instruction">{instructions[step]}</p>
 
             <div className="trio-image-wrap">
@@ -318,7 +318,7 @@ export default function Trio() {
                     step === "level3") &&
                     showReplay && (
                         <button className="trio-btn" onClick={handleReplay}>
-                            Replay
+                            Rejouer
                         </button>
                     )}
 
@@ -328,7 +328,7 @@ export default function Trio() {
                         className="trio-btn trio-btn--main"
                         onClick={startLevel1}
                     >
-                        Start
+                        Commencer
                     </button>
                 )}
 
@@ -338,7 +338,7 @@ export default function Trio() {
                         className="trio-btn trio-btn--main"
                         onClick={startLevel2}
                     >
-                        Next
+                        Suivant
                     </button>
                 )}
 
@@ -348,7 +348,7 @@ export default function Trio() {
                         className="trio-btn trio-btn--main"
                         onClick={startLevel3}
                     >
-                        Next
+                        Suivant
                     </button>
                 )}
 
@@ -361,14 +361,14 @@ export default function Trio() {
                             setStep("complete");
                         }}
                     >
-                        Finish
+                        Terminer
                     </button>
                 )}
 
                 {/* Complete → restart */}
                 {isComplete && (
                     <button className="trio-btn" onClick={reset}>
-                        Play again
+                        Rejouer
                     </button>
                 )}
             </div>

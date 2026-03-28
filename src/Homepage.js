@@ -10,11 +10,11 @@ const PUBLIC = process.env.PUBLIC_URL || "";
 const CHARACTERS = [
     {
         id: "cerbere",
-        name: "Cerbere",
+        name: "Cerbère",
         subtitle: "La musique se construit ensemble !",
         description: "Desc",
         image: "/images/cerbere_triste.png",
-        instrument: "Winds",
+        instrument: "Vents",
         component: Trio,
         ready: true,
         stagePos: { bottom: "8%", left: "4%", width: "30%" },
@@ -25,7 +25,7 @@ const CHARACTERS = [
         subtitle: "Accorder les désaccords !",
         description: "Desc",
         image: "/images/gnomes_faches.png",
-        instrument: "Bass",
+        instrument: "Contrebasse",
         component: Bass,
         ready: true,
         stagePos: { bottom: "8%", left: "27%", width: "22%" },
@@ -33,7 +33,7 @@ const CHARACTERS = [
     {
         id: "millepattes",
         name: "Millody",
-        subtitle: "Veillez à ne pas s'emmêller les pattes !",
+        subtitle: "Veillez à ne pas s'emmêler les pattes !",
         description: "Desc",
         image: "/images/mille_pattes_fache.png",
         instrument: "Piano",
@@ -44,10 +44,10 @@ const CHARACTERS = [
     {
         id: "pieuvre",
         name: "Krak'n'Roll",
-        subtitle: "Ne pas perdre le rythme !",
+        subtitle: "Ne perdez pas le rythme !",
         description: "Desc",
         image: "/images/pieuvre_triste_sans_fond.png",
-        instrument: "Drums",
+        instrument: "Batterie",
         component: Drums,
         ready: true,
         stagePos: { bottom: "8%", right: "2%", width: "24%" },
@@ -205,9 +205,9 @@ export default function Homepage() {
 
                 <div className="hp-hero-content">
                     <h1 className="hp-hero-title">
-                        <span className="hp-hero-hell">Hell's</span>
+                        <span className="hp-hero-hell">Quartet</span>
                         <br />
-                        <span className="hp-hero-quartet">Quartet</span>
+                        <span className="hp-hero-quartet">de l'Enfer</span>
                     </h1>
                     <p className="hp-hero-sub">...</p>
                 </div>
@@ -282,7 +282,7 @@ export default function Homepage() {
                             </span>
                             {!char.ready && (
                                 <span className="hp-char-tooltip-lock">
-                                    Coming Soon
+                                    Bientôt disponible
                                 </span>
                             )}
                         </div>
@@ -290,7 +290,7 @@ export default function Homepage() {
                 ))}
 
                 <div className="hp-stage-cta">
-                    <span>Click a musician to begin!</span>
+                    <span>Clique sur un musicien pour commencer !</span>
                 </div>
             </section>
 
@@ -400,10 +400,10 @@ export default function Homepage() {
                                     draggable={false}
                                 />
                                 <p className="hp-coming-soon-title">
-                                    This puzzle is still being composed&hellip;
+                                    Ce puzzle est en cours de construction&hellip;
                                 </p>
                                 <p className="hp-coming-soon-sub">
-                                    Check back soon!
+                                    Revenez bientôt !
                                 </p>
                             </div>
                         )}
