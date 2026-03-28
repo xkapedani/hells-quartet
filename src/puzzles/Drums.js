@@ -18,11 +18,7 @@ function Drums({ onClose }) {
         [300, 650, 1000, 1550, 1900],
     ]);
     const [currentExampleIndex, setCurrentExampleIndex] = useState(null);
-    const [completedExamples, setCompletedExamples] = useState([
-        false,
-        false,
-        false,
-    ]);
+    const [completedExamples, setCompletedExamples] = useState([false, false, false]);
     const [activeBeat, setActiveBeat] = useState(-1);
     const playingTimeoutsRef = useRef([]);
     const containerRef = useRef(null);
@@ -52,7 +48,7 @@ function Drums({ onClose }) {
                 setPieuvreHappy(true);
                 setCompletedExamples([true, true, true]);
                 setCurrentExampleIndex(null);
-                setMessage("Le puzzle est déjà terminé.");
+                setMessage("Puzzle already completed.");
             } else {
                 setPattern(examples[0]);
                 setCurrentExampleIndex(0);
@@ -93,10 +89,7 @@ function Drums({ onClose }) {
     // show a friendly intro dialog when entering the drums screen
     useEffect(() => {
         const avatar = `${publicPath}/images/pieuvre_triste_tete.png`;
-        showDialog(
-            "Bonjour, je suis Krack'n'roll et je suis très triste car je n'arrive pas à jouer le bon rythme. Peux-tu m'aider ?",
-            { avatar },
-        );
+        showDialog("Bonjour, je suis Krack'n'roll et je suis très triste car je n'arrive pas à jouer le bon rythme. Peux-tu m'aider ?", { avatar });
         const target = containerRef.current || document;
         const hideOnFirst = () => setDialogVisible(false);
         try {
@@ -107,9 +100,7 @@ function Drums({ onClose }) {
         }
         return () => {
             try {
-                target.removeEventListener("pointerdown", hideOnFirst, {
-                    once: true,
-                });
+                target.removeEventListener("pointerdown", hideOnFirst, { once: true });
             } catch (e) {
                 target.removeEventListener("pointerdown", hideOnFirst);
             }
@@ -129,17 +120,13 @@ function Drums({ onClose }) {
                 if (typeof onClose === "function") onClose();
             };
             try {
-                target.addEventListener("pointerdown", hideOnFirst, {
-                    once: true,
-                });
+                target.addEventListener("pointerdown", hideOnFirst, { once: true });
             } catch (e) {
                 target.addEventListener("pointerdown", hideOnFirst);
             }
             return () => {
                 try {
-                    target.removeEventListener("pointerdown", hideOnFirst, {
-                        once: true,
-                    });
+                    target.removeEventListener("pointerdown", hideOnFirst, { once: true });
                 } catch (e) {
                     target.removeEventListener("pointerdown", hideOnFirst);
                 }
@@ -147,6 +134,7 @@ function Drums({ onClose }) {
         }
         return undefined;
     }, [pieuvreHappy, onClose]);
+
 
     // play a sample sound file at given scheduled ms
     function playSampleAt(time) {
@@ -167,6 +155,8 @@ function Drums({ onClose }) {
         return { x, y };
     }
 
+    
+
     async function playPattern(startDelay = 2000) {
         if (!pattern || pattern.length === 0) return;
         setPlaying(true);
@@ -175,21 +165,17 @@ function Drums({ onClose }) {
         // wait a short moment before starting playback so the user
         // can see the octopus / UI settle; default is 2000ms but callers
         // can override (e.g., pass 0 when user manually clicks the octopus)
-        const START_DELAY = startDelay; // ms
+        const START_DELAY = startDelay;
         // schedule visual and audio for each beat
         pattern.forEach((t, i) => {
             // schedule audio sample
-                    playSampleAt(t + START_DELAY);
-            // schedule particle spawn at same time as audio (respect START_DELAY)
+            playSampleAt(t + START_DELAY);
+            // schedule particle spawn at same time
             const spawnId = setTimeout(() => {
                 // compute position at spawn time (in case layout changed)
                 const octoPos = getRelativeCenter(octopusRef);
                 const jitterX = (Math.random() - 0.5) * 40;
-                particlesRef.current &&
-                    particlesRef.current.spawnAt(
-                        octoPos.x + jitterX,
-                        octoPos.y,
-                    );
+                particlesRef.current && particlesRef.current.spawnAt(octoPos.x + jitterX, octoPos.y);
             }, t + START_DELAY);
             playingTimeoutsRef.current.push(spawnId);
             // schedule visual highlight
@@ -201,7 +187,7 @@ function Drums({ onClose }) {
         const clearId = setTimeout(() => {
             setPlaying(false);
             setActiveBeat(-1);
-            setMessage("Maintenant reproduis le rythme en cliquant sur le tambour ci-dessous.");
+            setMessage("Now reproduce the rhythm by clicking the drum below.");
         }, last);
         playingTimeoutsRef.current.push(clearId);
     }
@@ -220,11 +206,7 @@ function Drums({ onClose }) {
             const spawnId = setTimeout(() => {
                 const octoPos = getRelativeCenter(octopusRef);
                 const jitterX = (Math.random() - 0.5) * 40;
-                particlesRef.current &&
-                    particlesRef.current.spawnAt(
-                        octoPos.x + jitterX,
-                        octoPos.y,
-                    );
+                particlesRef.current && particlesRef.current.spawnAt(octoPos.x + jitterX, octoPos.y);
             }, t + START_DELAY);
             playingTimeoutsRef.current.push(spawnId);
             const id = setTimeout(() => setActiveBeat(i), t + START_DELAY);
@@ -234,14 +216,14 @@ function Drums({ onClose }) {
         const clearId = setTimeout(() => {
             setPlaying(false);
             setActiveBeat(-1);
-            setMessage("Maintenant reproduis le rythme en cliquant sur le tambour ci-dessous.");
+            setMessage("Now reproduce the rhythm by clicking the drum below.");
         }, last);
         playingTimeoutsRef.current.push(clearId);
     }
 
     function stopRecording(passedClicks) {
         setRecording(false);
-        setMessage("Évaluation...");
+        setMessage("Evaluating...");
         setTimeout(() => evaluateAttempt(passedClicks), 200);
     }
 
@@ -258,13 +240,12 @@ function Drums({ onClose }) {
                 return arr;
             });
             setRecording(true);
-            setMessage("Enregistrement... maintenant clique pour chaque battement afin de reproduire le rythme.");
+            setMessage("Recording... now click for each beat to match the rhythm.");
             // feedback for start
             PlayFromFile("one-time-drum.mp3");
             // spawn initial note particle at drum on start
             const drumPosStart = getRelativeCenter(drumImgRef);
-            particlesRef.current &&
-                particlesRef.current.spawnAt(drumPosStart.x, drumPosStart.y);
+            particlesRef.current && particlesRef.current.spawnAt(drumPosStart.x, drumPosStart.y);
             return;
         }
         // recording: record click time relative to start
@@ -287,8 +268,7 @@ function Drums({ onClose }) {
         PlayFromFile("one-time-drum.mp3");
         // spawn a note particle on the drum
         const drumPos = getRelativeCenter(drumImgRef);
-        particlesRef.current &&
-            particlesRef.current.spawnAt(drumPos.x, drumPos.y);
+        particlesRef.current && particlesRef.current.spawnAt(drumPos.x, drumPos.y);
     }
 
     function computeIntervals(times) {
@@ -304,7 +284,7 @@ function Drums({ onClose }) {
 
     function evaluateAttempt(passedUserArray) {
         if (!userClicks || userClicks.length === 0) {
-            setMessage("Aucun clic enregistré. Réessaie.");
+            setMessage("No clicks recorded. Try again.");
             setRecording(false);
             return;
         }
@@ -331,7 +311,7 @@ function Drums({ onClose }) {
         }
 
         if (ok) {
-            setMessage("Bien joué ! Tu es en rythme.");
+            setMessage("Nice! You matched the rhythm.");
             let allCompleted = false;
             if (currentExampleIndex !== null) {
                 // mark current completed and compute next candidate synchronously
@@ -341,18 +321,12 @@ function Drums({ onClose }) {
                 // if all completed, make pieuvre happy
                 if (copy.every(Boolean)) {
                     setPieuvreHappy(true);
-                    try {
-                        localStorage.setItem("puzzle-drums-completed", "1");
-                    } catch (e) {}
+                    try { localStorage.setItem("puzzle-drums-completed", "1"); } catch (e) {}
                     allCompleted = true;
                 } else {
                     // find next not-completed example, preferring the next index
                     let next = -1;
-                    for (
-                        let j = currentExampleIndex + 1;
-                        j < copy.length;
-                        j++
-                    ) {
+                    for (let j = currentExampleIndex + 1; j < copy.length; j++) {
                         if (!copy[j]) {
                             next = j;
                             break;
@@ -371,54 +345,28 @@ function Drums({ onClose }) {
                         // immediately play the computed next pattern to avoid race on setState
                         const nextPattern = examples[next];
                         setPattern(nextPattern);
-                        setMessage(`Exemple ${next + 1}`);
+                        setMessage(`Loaded example ${next + 1}`);
                         // play next pattern right away using provided array
                         playPatternWith(nextPattern);
                     }
                 }
             } else {
                 setPieuvreHappy(true);
-                try {
-                    localStorage.setItem("puzzle-drums-completed", "1");
-                } catch (e) {}
+                try { localStorage.setItem("puzzle-drums-completed", "1"); } catch (e) {}
                 allCompleted = true;
             }
             // celebration: spawn heart particles around octopus
             const octoPosSuccess = getRelativeCenter(octopusRef);
-            particlesRef.current &&
-                particlesRef.current.spawnBurst(
-                    octoPosSuccess.x,
-                    octoPosSuccess.y,
-                    10,
-                    {
-                        src: `${publicPath}/images/heart.png`,
-                        radius: 200,
-                        size: 48,
-                        lifetime: 6000,
-                    },
-                );
-            // if there was no next example selection above, still try to autoplay next pattern
-            if (!autoPlayNext) setAutoPlayNext(true);
+            particlesRef.current && particlesRef.current.spawnBurst(octoPosSuccess.x, octoPosSuccess.y, 10, { src: `${publicPath}/images/heart.png`, radius: 200, size: 48, lifetime: 6000 });
+            // only autoplay next melody when not all examples are completed
+            if (!allCompleted && !autoPlayNext) setAutoPlayNext(true);
         } else {
-            const hint = diffs.length
-                ? ` diffs: ${diffs.map((d) => Math.round(d)).join(",")}`
-                : "";
-            setMessage("Pas tout à fait, réessaie ou écoute une fois de plus." + hint);
+            const hint = diffs.length ? ` diffs: ${diffs.map((d) => Math.round(d)).join(",")}` : "";
+            setMessage("Not quite — try again or listen once more." + hint);
             setPieuvreHappy(false);
             // negative feedback: spawn thunder particles around octopus
             const octoPosFail = getRelativeCenter(octopusRef);
-            particlesRef.current &&
-                particlesRef.current.spawnBurst(
-                    octoPosFail.x,
-                    octoPosFail.y,
-                    10,
-                    {
-                        src: `${publicPath}/images/thunder.png`,
-                        radius: 200,
-                        size: 56,
-                        lifetime: 6000,
-                    },
-                );
+            particlesRef.current && particlesRef.current.spawnBurst(octoPosFail.x, octoPosFail.y, 10, { src: `${publicPath}/images/thunder.png`, radius: 200, size: 56, lifetime: 6000 });
             // after thunder, replay the same melody (short delay so thunder is visible)
             setTimeout(() => {
                 playPattern();
@@ -461,16 +409,9 @@ function Drums({ onClose }) {
             <div style={{ marginTop: 8, textAlign: "center" }}>
                 <img
                     ref={octopusRef}
-                    src={
-                        pieuvreHappy
-                            ? `${publicPath}/images/pieuvre_heureuse_2.png`
-                            : `${publicPath}/images/pieuvre_triste_sans_fond.png`
-                    }
+                    src={pieuvreHappy ? `${publicPath}/images/pieuvre_heureuse_2.png` : `${publicPath}/images/pieuvre_triste_sans_fond.png`}
                     alt="pieuvre"
-                    onClick={() => {
-                        if (!playing && pattern.length > 0 && !cooldown)
-                            playPattern(0);
-                    }}
+                    onClick={() => { if (!playing && pattern.length>0 && !cooldown) playPattern(0); }}
                     role="button"
                     tabIndex={0}
                     // crop image to be square
@@ -480,15 +421,10 @@ function Drums({ onClose }) {
                         objectFit: "cover",
                         display: "block",
                         margin: "0 auto",
-                        filter: pieuvreHappy
-                            ? "brightness(1.05) saturate(1.2) drop-shadow(0 12px 36px rgba(200,50,50,0.25))"
-                            : "none",
+                        filter: pieuvreHappy ? "brightness(1.05) saturate(1.2) drop-shadow(0 12px 36px rgba(200,50,50,0.25))" : "none",
                         transition: "filter 400ms ease, transform 400ms ease",
                         transform: pieuvreHappy ? "scale(1.05)" : "scale(1)",
-                        cursor:
-                            playing || pattern.length === 0 || cooldown
-                                ? "not-allowed"
-                                : "pointer",
+                        cursor: (playing || pattern.length===0 || cooldown) ? "not-allowed" : "pointer",
                     }}
                 />
             </div>
@@ -504,27 +440,13 @@ function Drums({ onClose }) {
                     gap: 12,
                 }}
             >
-                <div
-                    style={{
-                        display: "flex",
-                        gap: 10,
-                        marginTop: 6,
-                        alignItems: "center",
-                    }}
-                >
+
+                <div style={{ display: "flex", gap: 10, marginTop: 6, alignItems: "center" }}>
                     {completedExamples.map((done, i) => (
                         <img
                             key={i}
-                            src={
-                                done
-                                    ? `${publicPath}/images/star-full.png`
-                                    : `${publicPath}/images/star-empty.png`
-                            }
-                            alt={
-                                done
-                                    ? `Star ${i + 1} full`
-                                    : `Star ${i + 1} empty`
-                            }
+                            src={done ? `${publicPath}/images/star-full.png` : `${publicPath}/images/star-empty.png`}
+                            alt={done ? `Star ${i+1} full` : `Star ${i+1} empty`}
                             style={{ width: 100, height: 100 }}
                         />
                     ))}
@@ -546,18 +468,9 @@ function Drums({ onClose }) {
                     {/* image of drum-full, when on cooldown image of drum-empty */}
                     <img
                         ref={drumImgRef}
-                        src={
-                            cooldown
-                                ? `${publicPath}/images/drum-empty.png`
-                                : `${publicPath}/images/drum-full.png`
-                        }
+                        src={cooldown ? `${publicPath}/images/drum-empty.png` : `${publicPath}/images/drum-full.png`}
                         alt="drum"
-                        style={{
-                            width: 300,
-                            height: 500,
-                            objectFit: "cover",
-                            pointerEvents: "none",
-                        }}
+                        style={{ width: 300, height: 500, objectFit: "cover", pointerEvents: "none" }}
                     />
                 </div>
             </div>
