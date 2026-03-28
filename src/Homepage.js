@@ -10,7 +10,7 @@ const PUBLIC = process.env.PUBLIC_URL || "";
 const CHARACTERS = [
     {
         id: "cerbere",
-        name: "Cerbère",
+        name: "Cerb'air",
         subtitle: "La musique se construit ensemble !",
         description: "Desc",
         image: "/images/cerbere_triste.png",
