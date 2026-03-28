@@ -21,7 +21,7 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    background:
+    background: url("../public/images/scene.png") center/cover no-repeat,
         radial-gradient(
             ellipse 80% 60% at 50% 40%,
             #1a0a1e 0%,
@@ -33,6 +33,7 @@
             transparent 60%
         ),
         linear-gradient(180deg, #0c0810 0%, #070709 100%);
+    background-attachment: fixed;
 }
 
 .hp-hero-content {
@@ -146,7 +147,7 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    background:
+    background: url("../public/images/scene.png") center/cover no-repeat,
         radial-gradient(
             ellipse 90% 50% at 50% 20%,
             #1c0f24 0%,
@@ -158,6 +159,7 @@
             transparent 50%
         ),
         linear-gradient(180deg, #070709 0%, #0d0910 40%, #110c14 100%);
+    background-attachment: fixed;
 }
 
 .hp-stage-floor {
