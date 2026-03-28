@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Trio.css";
-import { playFile, cancelSequence, stopCurrent } from "../Player";
+import { playFile, cancelSequence, stopCurrent, PlayFromFile } from "../Player";
 import DialogBox from "../components/DialogBox";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
@@ -28,8 +28,7 @@ const INSTRUMENTS = [
     },
 ];
 
-const LEVEL2_FILE = "cerbere-game/cerbere-game-lvl2.MP3";
-const LEVEL3_FILE = "cerbere-game/cerbere-game-lvl3.MP3";
+// Level audio files are played from the selected instrument files now
 
 const ZONES = [
     { id: "saxophone", left: "2%", top: "5%", width: "32%", height: "90%" },
@@ -63,6 +62,7 @@ export default function Trio() {
     const [l2Done, setL2Done] = useState(false);
 
     // Level 3
+    const [l3Targets, setL3Targets] = useState([]);
     const [l3Found, setL3Found] = useState([]);
     const [l3Done, setL3Done] = useState(false);
 
@@ -184,7 +184,8 @@ export default function Trio() {
         setFeedback("");
         setStep("level2");
         setTimeout(() => {
-            playFile(LEVEL2_FILE);
+            // play the chosen instrument files so targets match the audio
+            shuffled.forEach((s) => PlayFromFile(s.file));
             scheduleButton(setShowReplay, REPLAY_SHOW_DELAY);
         }, 300);
     }
@@ -193,12 +194,16 @@ export default function Trio() {
         cancelSequence();
         stopCurrent();
         resetButtons();
+        // pick two instruments for level 3 and play them so targets match audio
+        const shuffled = [...INSTRUMENTS].sort(() => Math.random() - 0.5).slice(0, 2);
+        setL3Targets(shuffled);
         setL3Found([]);
         setL3Done(false);
         setFeedback("");
         setStep("level3");
         setTimeout(() => {
-            playFile(LEVEL3_FILE);
+            // play both instrument files (concurrently) so the player hears the same targets
+            shuffled.forEach((s) => PlayFromFile(s.file));
             scheduleButton(setShowReplay, REPLAY_SHOW_DELAY);
         }, 500);
     }
@@ -216,6 +221,7 @@ export default function Trio() {
         setL2Targets([]);
         setL2Found([]);
         setL2Done(false);
+        setL3Targets([]);
         setL3Found([]);
         setL3Done(false);
     }
@@ -269,10 +275,15 @@ export default function Trio() {
 
         if (step === "level3") {
             if (l3Done) return;
+            const targetIds = l3Targets.map((t) => t.id);
+            if (!targetIds.includes(id)) {
+                showFeedback("✗", "wrong");
+                return;
+            }
             if (l3Found.includes(id)) return;
             const next = [...l3Found, id];
             setL3Found(next);
-            if (next.length === 2) {
+            if (next.length === l3Targets.length) {
                 setL3Done(true);
                 showFeedback("✓", "correct", DONE_BUTTON_DELAY);
                 scheduleButton(setShowDoneButton, DONE_BUTTON_DELAY);
@@ -286,11 +297,11 @@ export default function Trio() {
         if (step === "level1" && l1Target) playInstrument(l1Target.id);
         if (step === "level2") {
             stopCurrent();
-            playFile(LEVEL2_FILE);
+            l2Targets.forEach((t) => PlayFromFile(t.file));
         }
         if (step === "level3") {
             stopCurrent();
-            playFile(LEVEL3_FILE);
+            l3Targets.forEach((t) => PlayFromFile(t.file));
         }
     }
 
