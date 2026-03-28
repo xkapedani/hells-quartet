@@ -17,7 +17,7 @@ const CHARACTERS = [
         instrument: "Vents",
         component: Trio,
         ready: true,
-        stagePos: { bottom: "8%", left: "4%", width: "30%" },
+        stagePos: { bottom: "14%", left: "60%", width: "34%"},
     },
     {
         id: "gnomes",
@@ -28,7 +28,7 @@ const CHARACTERS = [
         instrument: "Contrebasse",
         component: Bass,
         ready: true,
-        stagePos: { bottom: "8%", left: "27%", width: "22%" },
+        stagePos: { bottom: "32%", left: "27%", width: "26%" },
     },
     {
         id: "millepattes",
@@ -39,7 +39,7 @@ const CHARACTERS = [
         instrument: "Piano",
         component: Piano,
         ready: true,
-        stagePos: { bottom: "6%", left: "48%", width: "28%" },
+        stagePos: { bottom: "30%", left: "52%", width: "22%" },
     },
     {
         id: "pieuvre",
@@ -50,7 +50,7 @@ const CHARACTERS = [
         instrument: "Batterie",
         component: Drums,
         ready: true,
-        stagePos: { bottom: "8%", right: "2%", width: "24%" },
+        stagePos: { bottom: "18%", left: "10%", width: "32%" },
     },
 ];
 
@@ -212,7 +212,7 @@ export default function Homepage() {
                         </h1>
                     </div>
                 </div>
-                
+
                 <div
                     className={
                         "hp-arrows" +
