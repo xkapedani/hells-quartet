@@ -9,6 +9,8 @@ export default function DialogBox({
     avatar = null,
     name = "",
     position = "bottom",
+    typeSpeed = 10,
+    typeJitter = 20,
 }) {
     const [displayed, setDisplayed] = useState("");
     useEffect(() => {
@@ -16,14 +18,16 @@ export default function DialogBox({
         let idx = 0;
         setDisplayed("");
         if (visible && message) {
+            const base = Math.max(1, Number(typeSpeed) || 8);
+            const jitter = Math.max(0, Number(typeJitter) || 12);
             typer = setInterval(() => {
                 idx += 1;
                 setDisplayed(message.slice(0, idx));
                 if (idx >= message.length) clearInterval(typer);
-            }, 26 + Math.round(Math.random() * 40));
+            }, base + Math.round(Math.random() * jitter));
         }
         return () => clearInterval(typer);
-    }, [message, visible]);
+    }, [message, visible, typeSpeed, typeJitter]);
 
     useEffect(() => {
         if (!visible) return undefined;
