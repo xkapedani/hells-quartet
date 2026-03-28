@@ -100,7 +100,7 @@ function Drums({ onClose }) {
     useEffect(() => {
         if (pieuvreHappy) {
             const avatar = `${publicPath}/images/pieuvre_heureuse_tete.png`;
-            showDialog("Merci je suis heureux à nouveau!", { avatar });
+            showDialog("Merci je suis heureux à nouveau !", { avatar });
             const target = containerRef.current || document;
             const hideOnFirst = () => {
                 setDialogVisible(false);
