@@ -284,6 +284,14 @@ export default function Trio() {
             <h1 className="trio-title">Les Trois Instruments</h1>
             <p className="trio-instruction">{instructions[step]}</p>
 
+            <div className="trio-legend">
+                {INSTRUMENTS.map((inst) => (
+                    <div key={inst.id} className="trio-legend-item">
+                        <span className="trio-legend-name">{inst.label}</span>
+                    </div>
+                ))}
+            </div>
+
             <div className="trio-image-wrap">
                 <img
                     src={`${PUBLIC}/images/cerbere_triste.png`}
@@ -380,14 +388,6 @@ export default function Trio() {
                         Rejouer
                     </button>
                 )}
-            </div>
-
-            <div className="trio-legend">
-                {INSTRUMENTS.map((inst) => (
-                    <div key={inst.id} className="trio-legend-item">
-                        <span className="trio-legend-name">{inst.label}</span>
-                    </div>
-                ))}
             </div>
         </div>
     );

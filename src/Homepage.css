@@ -195,7 +195,6 @@
         rgba(50, 35, 25, 0.85) 60%,
         rgba(40, 28, 18, 0.95) 100%
     );
-    border-top: 1px solid rgba(120, 90, 60, 0.15);
 }
 
 .hp-spotlight {
