@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Trio.css";
 import { playFile, cancelSequence, stopCurrent } from "../Player";
+import DialogBox from "../components/DialogBox";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
@@ -73,6 +74,10 @@ export default function Trio() {
     const feedbackTimer = useRef(null);
     const buttonTimers = useRef([]);
 
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState("");
+    const [dialogAvatar, setDialogAvatar] = useState(null);
+
     function clearButtonTimers() {
         buttonTimers.current.forEach(clearTimeout);
         buttonTimers.current = [];
@@ -89,6 +94,35 @@ export default function Trio() {
         setShowNextLevel(false);
         setShowDoneButton(false);
     }
+
+    function showDialog(msg, opts = {}) {
+        setDialogMessage(msg);
+        setDialogAvatar(opts.avatar || null);
+        setDialogVisible(true);
+    }
+
+    useEffect(() => {
+        const avatar = `${PUBLIC}/images/cerbere_triste.png`;
+        showDialog(
+            "Roh, on n'arrive pas à différencier les sons de nos instruments… Peux-tu nous aider ?",
+            { avatar },
+        );
+        const target = document;
+        const hideOnFirst = () => setDialogVisible(false);
+        try {
+            target.addEventListener("pointerdown", hideOnFirst, { once: true });
+        } catch (e) {
+            target.addEventListener("pointerdown", hideOnFirst);
+        }
+        return () => {
+            try {
+                target.removeEventListener("pointerdown", hideOnFirst, { once: true });
+            } catch (e) {
+                target.removeEventListener("pointerdown", hideOnFirst);
+            }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     function playInstrument(id) {
         const inst = getInstrument(id);
@@ -281,6 +315,15 @@ export default function Trio() {
                 backgroundRepeat: "no-repeat",
             }}
         >
+            <DialogBox
+                message={dialogMessage}
+                visible={dialogVisible}
+                onClose={() => setDialogVisible(false)}
+                avatar={dialogAvatar}
+                name={"Cerb'air"}
+                autoCloseMs={0}
+            />
+
             <h1 className="trio-title">Les Trois Instruments</h1>
             <p className="trio-instruction">{instructions[step]}</p>
 
