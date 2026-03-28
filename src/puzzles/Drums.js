@@ -263,7 +263,7 @@ function Drums() {
                     <img
                         src={cooldown ? `${publicPath}/images/drum-empty.png` : `${publicPath}/images/drum-full.png`}
                         alt="drum"
-                        style={{ width: 120, height: "auto", pointerEvents: "none" }}
+                        style={{ width: 420, height: "auto", pointerEvents: "none" }}
                     />
                 </div>
             </div>
