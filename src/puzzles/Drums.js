@@ -47,9 +47,6 @@ function Drums() {
 
     async function playPattern() {
         if (!pattern || pattern.length === 0) return;
-        setPlaying(true);
-        setMessage("Listening...");
-        // clear any previous scheduled timeouts
         playingTimeoutsRef.current.forEach((id) => clearTimeout(id));
         playingTimeoutsRef.current = [];
         // schedule visual and audio for each beat
@@ -68,13 +65,6 @@ function Drums() {
             setMessage("Now reproduce the rhythm by clicking the drum below.");
         }, last);
         playingTimeoutsRef.current.push(clearId);
-    }
-
-    function startRecording() {
-        setUserClicks([]);
-        recordStartRef.current = performance.now();
-        setRecording(true);
-        setMessage("Recording... click the drum to match the rhythm.");
     }
 
     function stopRecording(passedClicks) {
@@ -185,12 +175,13 @@ function Drums() {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <h1>Drums</h1>
-
             <div style={{ marginTop: 8, textAlign: "center" }}>
                 <img
                     src={pieuvreHappy ? `${publicPath}/images/pieuvre_triste_sans_fond.png` : `${publicPath}/images/pieuvre_triste_sans_fond.png`}
                     alt="pieuvre"
+                    onClick={() => { if (!playing && pattern.length>0 && !cooldown) playPattern(); }}
+                    role="button"
+                    tabIndex={0}
                     style={{
                         width: 240,
                         height: "auto",
@@ -200,6 +191,7 @@ function Drums() {
                         filter: pieuvreHappy ? "hue-rotate(100deg) saturate(140%)" : "none",
                         transition: "filter 400ms ease, transform 400ms ease",
                         transform: pieuvreHappy ? "scale(1.05)" : "scale(1)",
+                        cursor: (playing || pattern.length===0 || cooldown) ? "not-allowed" : "pointer",
                     }}
                 />
             </div>
@@ -215,33 +207,25 @@ function Drums() {
                     gap: 12,
                 }}
             >
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-                    <button onClick={playPattern} disabled={playing || pattern.length===0 || cooldown} style={{ padding: "8px 12px" }}>
-                        Listen
-                    </button>
-                    <button onClick={stopRecording} disabled={!recording} style={{ padding: "8px 12px" }}>
-                        Finish
-                    </button>
-                </div>
 
-                                <div style={{ textAlign: "center", minHeight: 24 }}>{message}</div>
+            <div style={{ textAlign: "center", minHeight: 24 }}>{message}</div>
 
-                                <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-                                    {examples.map((ex, i) => (
-                                        <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                            <button
-                                                onClick={() => { setPattern(ex); setCurrentExampleIndex(i); setMessage(`Loaded example ${i+1}`); }}
-                                                disabled={cooldown}
-                                                style={{ padding: "6px 10px", background: currentExampleIndex===i ? "#2b6" : undefined }}
-                                            >
-                                                Load Example {i+1}
-                                            </button>
-                                            <div style={{ fontSize: 12, marginTop: 6 }}>
-                                                {completedExamples[i] ? "✅ Completed" : ""}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
+                {examples.map((ex, i) => (
+                    <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <button
+                            onClick={() => { setPattern(ex); setCurrentExampleIndex(i); setMessage(`Loaded example ${i+1}`); }}
+                            disabled={cooldown}
+                            style={{ padding: "6px 10px", background: currentExampleIndex===i ? "#2b6" : undefined }}
+                        >
+                            Load Example {i+1}
+                        </button>
+                        <div style={{ fontSize: 12, marginTop: 6 }}>
+                            {completedExamples[i] ? "✅ Completed" : ""}
+                        </div>
+                    </div>
+                ))}
+            </div>
 
                 <div
                     onClick={onDrumClick}
@@ -265,27 +249,6 @@ function Drums() {
                         <div style={{ fontSize: 12, opacity: 0.9 }}>{recording ? "Click to record rhythm" : "Click the drum to start reproducing"}</div>
                     </div>
                 </div>
-
-                                <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 12 }}>
-                                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                                        {pattern.map((_, i) => {
-                                            const isActive = i === activeBeat;
-                                            const isCompleted = completedExamples[i];
-                                            return (
-                                                <div key={i} style={{ width: 14, height: 14, borderRadius: 7, background: isActive ? "#ff0" : isCompleted ? "#6f6" : "#666" }} />
-                                            );
-                                        })}
-                                    </div>
-
-                                    <div style={{ width: "100%", display: "flex", justifyContent: "center", gap: 12 }}>
-                                        <div style={{ fontSize: 13 }}>
-                                            Pattern length: <strong>{pattern.length}</strong>
-                                        </div>
-                                        <div style={{ fontSize: 13 }}>
-                                            Your clicks: <strong>{userClicks.length}</strong>
-                                        </div>
-                                    </div>
-                                </div>
             </div>
         </div>
     );
