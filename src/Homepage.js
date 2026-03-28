@@ -38,7 +38,10 @@ function Homepage() {
         />
       </button>
 
-      <button className="homepage-button">
+      <button 
+        className="homepage-button"
+        onClick={() => navigate('/hells-quartet/drums')}
+      >
         <img
           src={`${publicPath}/images/pieuvre_triste_sans_fond.png`}
           alt="octopus icon"
