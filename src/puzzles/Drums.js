@@ -406,6 +406,22 @@ function Drums({ onClose }) {
                 name={"Krak'n'roll"}
                 autoCloseMs={0}
             />
+            <div
+                style={{
+                    position: "absolute",
+                    top: 20,
+                    left: 0,
+                    right: 0,
+                    textAlign: "center",
+                    color: "#fff",
+                    zIndex: 2,
+                }}
+            >
+                <h1 className="trio-title">Joue en rythme</h1>
+                <p className="">
+                    {"Aide-le à retrouver le rythme, Ecoute le rythme joué et reproduis le."}
+                </p>
+            </div>
             <div style={{ marginTop: 8, textAlign: "center" }}>
                 <img
                     ref={octopusRef}
@@ -428,7 +444,7 @@ function Drums({ onClose }) {
                     }}
                 />
             </div>
-
+                    
             <div
                 style={{
                     marginTop: 20,
@@ -440,8 +456,8 @@ function Drums({ onClose }) {
                     gap: 12,
                 }}
             >
-
-                <div style={{ display: "flex", gap: 10, marginTop: 6, alignItems: "center" }}>
+                
+                <div style={{ display: "flex", gap: 10, marginTop: 80, alignItems: "center" }}>
                     {completedExamples.map((done, i) => (
                         <img
                             key={i}
@@ -451,7 +467,7 @@ function Drums({ onClose }) {
                         />
                     ))}
                 </div>
-
+                    
                 <div
                     onClick={onDrumClick}
                     role="button"
