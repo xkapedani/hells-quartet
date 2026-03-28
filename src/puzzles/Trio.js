@@ -271,7 +271,16 @@ export default function Trio() {
     };
 
     return (
-        <div className="trio">
+        <div
+            className="trio"
+            style={{
+                backgroundImage: `url(${PUBLIC}/images/scene.png)`,
+                backgroundAttachment: "fixed",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+            }}
+        >
             <h1 className="trio-title">Les Trois Instruments</h1>
             <p className="trio-instruction">{instructions[step]}</p>
 

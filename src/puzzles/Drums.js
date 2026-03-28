@@ -48,7 +48,7 @@ function Drums({ onClose }) {
                 setPieuvreHappy(true);
                 setCompletedExamples([true, true, true]);
                 setCurrentExampleIndex(null);
-                setMessage("Puzzle already completed.");
+                setMessage("Le puzzle est déjà terminé.");
             } else {
                 setPattern(examples[0]);
                 setCurrentExampleIndex(0);
@@ -187,7 +187,7 @@ function Drums({ onClose }) {
         const clearId = setTimeout(() => {
             setPlaying(false);
             setActiveBeat(-1);
-            setMessage("Now reproduce the rhythm by clicking the drum below.");
+            setMessage("Maintenant reproduis le rythme en cliquant sur le tambour ci-dessous.");
         }, last);
         playingTimeoutsRef.current.push(clearId);
     }
@@ -216,14 +216,14 @@ function Drums({ onClose }) {
         const clearId = setTimeout(() => {
             setPlaying(false);
             setActiveBeat(-1);
-            setMessage("Now reproduce the rhythm by clicking the drum below.");
+            setMessage("Maintenant reproduis le rythme en cliquant sur le tambour ci-dessous.s");
         }, last);
         playingTimeoutsRef.current.push(clearId);
     }
 
     function stopRecording(passedClicks) {
         setRecording(false);
-        setMessage("Evaluating...");
+        setMessage("Évaluation en cours...");
         setTimeout(() => evaluateAttempt(passedClicks), 200);
     }
 
@@ -240,7 +240,7 @@ function Drums({ onClose }) {
                 return arr;
             });
             setRecording(true);
-            setMessage("Recording... now click for each beat to match the rhythm.");
+            setMessage("Enregistrement... maintenant clique pour chaque battement afin de reproduire le rythme.");
             // feedback for start
             PlayFromFile("one-time-drum.mp3");
             // spawn initial note particle at drum on start
@@ -284,7 +284,7 @@ function Drums({ onClose }) {
 
     function evaluateAttempt(passedUserArray) {
         if (!userClicks || userClicks.length === 0) {
-            setMessage("No clicks recorded. Try again.");
+            setMessage("Aucun clic enregistré. Réessaie.");
             setRecording(false);
             return;
         }
@@ -311,7 +311,7 @@ function Drums({ onClose }) {
         }
 
         if (ok) {
-            setMessage("Nice! You matched the rhythm.");
+            setMessage("Bien joué ! Tu es en rythme.");
             let allCompleted = false;
             if (currentExampleIndex !== null) {
                 // mark current completed and compute next candidate synchronously
@@ -345,7 +345,7 @@ function Drums({ onClose }) {
                         // immediately play the computed next pattern to avoid race on setState
                         const nextPattern = examples[next];
                         setPattern(nextPattern);
-                        setMessage(`Loaded example ${next + 1}`);
+                        setMessage(`Exemple ${next + 1}`);
                         // play next pattern right away using provided array
                         playPatternWith(nextPattern);
                     }
@@ -362,7 +362,7 @@ function Drums({ onClose }) {
             if (!allCompleted && !autoPlayNext) setAutoPlayNext(true);
         } else {
             const hint = diffs.length ? ` diffs: ${diffs.map((d) => Math.round(d)).join(",")}` : "";
-            setMessage("Not quite — try again or listen once more." + hint);
+            setMessage("Pas tout à fait, réessaie ou écoute une fois de plus." + hint);
             setPieuvreHappy(false);
             // negative feedback: spawn thunder particles around octopus
             const octoPosFail = getRelativeCenter(octopusRef);
