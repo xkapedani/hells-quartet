@@ -3,7 +3,7 @@ import { PlayFromFile } from "../Player";
 import Particles from "./Particles";
 import DialogBox from "../components/DialogBox";
 
-function Drums() {
+function Drums({ onClose }) {
     const [pattern, setPattern] = useState([]); // cumulative times in ms
     const [playing, setPlaying] = useState(false);
     const [recording, setRecording] = useState(false);
@@ -102,7 +102,10 @@ function Drums() {
             const avatar = `${publicPath}/images/pieuvre_heureuse_tete.png`;
             showDialog("Merci je suis heureux à nouveau!", { avatar });
             const target = containerRef.current || document;
-            const hideOnFirst = () => setDialogVisible(false);
+            const hideOnFirst = () => {
+                setDialogVisible(false);
+                if (typeof onClose === "function") onClose();
+            };
             try {
                 target.addEventListener("pointerdown", hideOnFirst, { once: true });
             } catch (e) {
@@ -117,7 +120,7 @@ function Drums() {
             };
         }
         return undefined;
-    }, [pieuvreHappy]);
+    }, [pieuvreHappy, onClose]);
 
 
     // play a sample sound file at given scheduled ms
@@ -290,6 +293,7 @@ function Drums() {
 
         if (ok) {
             setMessage("Nice! You matched the rhythm.");
+            let allCompleted = false;
             if (currentExampleIndex !== null) {
                 // mark current completed and compute next candidate synchronously
                 const copy = [...completedExamples];
@@ -298,6 +302,7 @@ function Drums() {
                 // if all completed, make pieuvre happy
                 if (copy.every(Boolean)) {
                     setPieuvreHappy(true);
+                    allCompleted = true;
                 } else {
                     // find next not-completed example, preferring the next index
                     let next = -1;
@@ -327,12 +332,13 @@ function Drums() {
                 }
             } else {
                 setPieuvreHappy(true);
+                allCompleted = true;
             }
             // celebration: spawn heart particles around octopus
             const octoPosSuccess = getRelativeCenter(octopusRef);
             particlesRef.current && particlesRef.current.spawnBurst(octoPosSuccess.x, octoPosSuccess.y, 10, { src: `${publicPath}/images/heart.png`, radius: 200, size: 48, lifetime: 6000 });
-            // if there was no next example selection above, still try to autoplay next pattern
-            if (!autoPlayNext) setAutoPlayNext(true);
+            // only autoplay next melody when not all examples are completed
+            if (!allCompleted && !autoPlayNext) setAutoPlayNext(true);
         } else {
             const hint = diffs.length ? ` diffs: ${diffs.map((d) => Math.round(d)).join(",")}` : "";
             setMessage("Not quite — try again or listen once more." + hint);

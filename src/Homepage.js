@@ -365,7 +365,7 @@ export default function Homepage() {
 
                     <div className="hp-overlay-content">
                         {PuzzleComponent ? (
-                            <PuzzleComponent />
+                            <PuzzleComponent onClose={handleBack} />
                         ) : (
                             <div className="hp-coming-soon">
                                 <img
