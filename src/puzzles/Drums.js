@@ -41,9 +41,22 @@ function Drums({ onClose }) {
     }
 
     useEffect(() => {
-        // set initial pattern from first example
-        setPattern(examples[0]);
-        setCurrentExampleIndex(0);
+        // set initial pattern from first example, or restore completion from localStorage
+        try {
+            const done = localStorage.getItem("puzzle-drums-completed");
+            if (done === "1") {
+                setPieuvreHappy(true);
+                setCompletedExamples([true, true, true]);
+                setCurrentExampleIndex(null);
+                setMessage("Puzzle already completed.");
+            } else {
+                setPattern(examples[0]);
+                setCurrentExampleIndex(0);
+            }
+        } catch (e) {
+            setPattern(examples[0]);
+            setCurrentExampleIndex(0);
+        }
         return () => {
             // cleanup scheduled timeouts
             playingTimeoutsRef.current.forEach((id) => clearTimeout(id));
@@ -302,6 +315,7 @@ function Drums({ onClose }) {
                 // if all completed, make pieuvre happy
                 if (copy.every(Boolean)) {
                     setPieuvreHappy(true);
+                    try { localStorage.setItem("puzzle-drums-completed", "1"); } catch (e) {}
                     allCompleted = true;
                 } else {
                     // find next not-completed example, preferring the next index
@@ -332,6 +346,7 @@ function Drums({ onClose }) {
                 }
             } else {
                 setPieuvreHappy(true);
+                try { localStorage.setItem("puzzle-drums-completed", "1"); } catch (e) {}
                 allCompleted = true;
             }
             // celebration: spawn heart particles around octopus

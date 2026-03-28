@@ -70,6 +70,16 @@ export default function Homepage() {
     const [musicStarted, setMusicStarted] = useState(false);
 
     const [hoveredId, setHoveredId] = useState(null);
+    const [completedPuzzles, setCompletedPuzzles] = useState({ drums: false });
+
+    useEffect(() => {
+        try {
+            const done = localStorage.getItem("puzzle-drums-completed") === "1";
+            setCompletedPuzzles({ drums: done });
+        } catch (e) {
+            setCompletedPuzzles({ drums: false });
+        }
+    }, []);
 
     useEffect(() => {
         function onScroll() {
@@ -166,6 +176,13 @@ export default function Homepage() {
 
     function handleBack() {
         setOverlayVisible(false);
+        // refresh completed puzzle flags immediately so homepage reflects changes
+        try {
+            const done = localStorage.getItem("puzzle-drums-completed") === "1";
+            setCompletedPuzzles((s) => ({ ...s, drums: done }));
+        } catch (e) {
+            setCompletedPuzzles((s) => ({ ...s, drums: false }));
+        }
         setTimeout(() => {
             setShowOverlay(false);
             setSelectedId(null);
@@ -246,7 +263,11 @@ export default function Homepage() {
                         aria-label={char.name}
                     >
                         <img
-                            src={`${PUBLIC}${char.image}`}
+                            src={
+                                char.id === "pieuvre" && completedPuzzles.drums
+                                    ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
+                                    : `${PUBLIC}${char.image}`
+                            }
                             alt={char.name}
                             className="hp-char-img"
                             draggable={false}
@@ -348,7 +369,11 @@ export default function Homepage() {
 
                         <div className="hp-overlay-bar-info">
                             <img
-                                src={`${PUBLIC}${selectedChar.image}`}
+                                src={
+                                    selectedChar.id === "pieuvre" && completedPuzzles.drums
+                                        ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
+                                        : `${PUBLIC}${selectedChar.image}`
+                                }
                                 alt=""
                                 className="hp-overlay-bar-img"
                                 draggable={false}
