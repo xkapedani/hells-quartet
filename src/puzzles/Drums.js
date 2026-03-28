@@ -167,7 +167,7 @@ function Drums({ onClose }) {
         return { x, y };
     }
 
-    async function playPattern() {
+    async function playPattern(startDelay = 2000) {
         if (!pattern || pattern.length === 0) return;
         setPlaying(true);
         playingTimeoutsRef.current.forEach((id) => clearTimeout(id));
@@ -175,12 +175,12 @@ function Drums({ onClose }) {
         // wait a short moment before starting playback so the user
         // can see the octopus / UI settle; default is 2000ms but callers
         // can override (e.g., pass 0 when user manually clicks the octopus)
-        const START_DELAY = 2000;
+        const START_DELAY = startDelay; // ms
         // schedule visual and audio for each beat
         pattern.forEach((t, i) => {
             // schedule audio sample
-            playSampleAt(t + START_DELAY);
-            // schedule particle spawn at same time
+                    playSampleAt(t + START_DELAY);
+            // schedule particle spawn at same time as audio (respect START_DELAY)
             const spawnId = setTimeout(() => {
                 // compute position at spawn time (in case layout changed)
                 const octoPos = getRelativeCenter(octopusRef);
@@ -190,7 +190,7 @@ function Drums({ onClose }) {
                         octoPos.x + jitterX,
                         octoPos.y,
                     );
-            }, t);
+            }, t + START_DELAY);
             playingTimeoutsRef.current.push(spawnId);
             // schedule visual highlight
             const id = setTimeout(() => setActiveBeat(i), t + START_DELAY);
@@ -225,7 +225,7 @@ function Drums({ onClose }) {
                         octoPos.x + jitterX,
                         octoPos.y,
                     );
-            }, t);
+            }, t + START_DELAY);
             playingTimeoutsRef.current.push(spawnId);
             const id = setTimeout(() => setActiveBeat(i), t + START_DELAY);
             playingTimeoutsRef.current.push(id);
@@ -469,7 +469,7 @@ function Drums({ onClose }) {
                     alt="pieuvre"
                     onClick={() => {
                         if (!playing && pattern.length > 0 && !cooldown)
-                            playPattern();
+                            playPattern(0);
                     }}
                     role="button"
                     tabIndex={0}
