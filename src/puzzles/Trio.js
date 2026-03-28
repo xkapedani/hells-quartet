@@ -346,15 +346,12 @@ export default function Trio() {
                     ZONES.map((zone) => (
                         <button
                             key={zone.id}
-                            className={[
-                                "trio-zone",
-                                playingId === zone.id
-                                    ? "trio-zone--playing"
-                                    : "",
-                                SHOW_ZONES ? "trio-zone--visible" : "",
-                            ]
-                                .filter(Boolean)
-                                .join(" ")}
+                                        className={[
+                                            "trio-zone",
+                                            SHOW_ZONES ? "trio-zone--visible" : "",
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" ")}
                             style={{
                                 left: zone.left,
                                 top: zone.top,
