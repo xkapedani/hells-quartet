@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PlayFromFile } from "../Player";
 import Particles from "./Particles";
+import DialogBox from "../components/DialogBox";
 
 function Drums() {
     const [pattern, setPattern] = useState([]); // cumulative times in ms
@@ -29,6 +30,15 @@ function Drums() {
     const recordStartRef = useRef(0);
     const publicPath = process.env.PUBLIC_URL;
     const [autoPlayNext, setAutoPlayNext] = useState(false);
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState("");
+    const [dialogAvatar, setDialogAvatar] = useState(null);
+
+    function showDialog(msg, opts = {}) {
+        setDialogMessage(msg);
+        setDialogAvatar(opts.avatar || null);
+        setDialogVisible(true);
+    }
 
     useEffect(() => {
         // set initial pattern from first example
@@ -62,6 +72,52 @@ function Drums() {
         }, 2000);
         return () => clearTimeout(id);
     }, []);
+
+    // show a friendly intro dialog when entering the drums screen
+    useEffect(() => {
+        const avatar = `${publicPath}/images/pieuvre_triste_tete.png`;
+        showDialog("Bonjour, je suis Krack'n'roll et je suis très triste car je n'arrive pas à jouer le bon rythme. Peux-tu m'aider ?", { avatar });
+        const target = containerRef.current || document;
+        const hideOnFirst = () => setDialogVisible(false);
+        try {
+            target.addEventListener("pointerdown", hideOnFirst, { once: true });
+        } catch (e) {
+            // some targets (like null) may not support options; fallback
+            target.addEventListener("pointerdown", hideOnFirst);
+        }
+        return () => {
+            try {
+                target.removeEventListener("pointerdown", hideOnFirst, { once: true });
+            } catch (e) {
+                target.removeEventListener("pointerdown", hideOnFirst);
+            }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // when octopus becomes happy, show a short celebratory dialog and
+    // hide it on the user's first click.
+    useEffect(() => {
+        if (pieuvreHappy) {
+            const avatar = `${publicPath}/images/pieuvre_heureuse_tete.png`;
+            showDialog("Merci je suis heureux à nouveau!", { avatar });
+            const target = containerRef.current || document;
+            const hideOnFirst = () => setDialogVisible(false);
+            try {
+                target.addEventListener("pointerdown", hideOnFirst, { once: true });
+            } catch (e) {
+                target.addEventListener("pointerdown", hideOnFirst);
+            }
+            return () => {
+                try {
+                    target.removeEventListener("pointerdown", hideOnFirst, { once: true });
+                } catch (e) {
+                    target.removeEventListener("pointerdown", hideOnFirst);
+                }
+            };
+        }
+        return undefined;
+    }, [pieuvreHappy]);
 
 
     // play a sample sound file at given scheduled ms
@@ -315,6 +371,14 @@ function Drums() {
             }}
         >
             <Particles ref={particlesRef} publicPath={publicPath} />
+            <DialogBox
+                message={dialogMessage}
+                visible={dialogVisible}
+                onClose={() => setDialogVisible(false)}
+                avatar={dialogAvatar}
+                name={"Krak'n'roll"}
+                autoCloseMs={0}
+            />
             <div style={{ marginTop: 8, textAlign: "center" }}>
                 <img
                     ref={octopusRef}
