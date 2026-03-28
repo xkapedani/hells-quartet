@@ -372,9 +372,9 @@
 }
 
 .hp-stage-cta span {
-    font-size: 1.05rem;
+    font-size: 2.05rem;
     font-weight: 500;
-    color: #776a5a;
+    color: #938069;
     letter-spacing: 0.04em;
     animation: hp-fadeIn 1s 0.4s ease both;
 }
