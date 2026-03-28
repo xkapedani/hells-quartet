@@ -3,6 +3,7 @@ import "./Homepage.css";
 import Trio from "./puzzles/Trio";
 import Drums from "./puzzles/Drums";
 import Piano from "./puzzles/Piano";
+import Bass from "./puzzles/Bass";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
@@ -25,8 +26,8 @@ const CHARACTERS = [
         description: "Desc",
         image: "/images/gnomes_faches.png",
         instrument: "Bass",
-        component: null,
-        ready: false,
+        component: Bass,
+        ready: true,
         stagePos: { bottom: "8%", left: "27%", width: "22%" },
     },
     {
