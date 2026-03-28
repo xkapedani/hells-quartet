@@ -1,0 +1,507 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Bass puzzle – "Accorde la contrebasse des gnomes"
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bass {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+    gap: 1.2rem;
+    min-height: 100vh;
+    background: #111;
+    color: #e8e8e8;
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+
+.bass-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.02em;
+    text-align: center;
+}
+
+.bass-instruction {
+    font-size: 1rem;
+    color: #aaa;
+    margin: 0;
+    text-align: center;
+    max-width: 540px;
+    line-height: 1.45;
+}
+
+/* ── Progress dots ────────────────────────────────────────────────────────── */
+
+.bass-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.bass-progress-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2.5px solid #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #ccc;
+    transition:
+        border-color 0.3s,
+        background 0.3s,
+        transform 0.3s,
+        color 0.3s,
+        box-shadow 0.3s;
+}
+
+.bass-progress-dot--active {
+    transform: scale(1.2);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.bass-progress-dot--tuned {
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.bass-progress-text {
+    font-size: 0.82rem;
+    color: #777;
+    margin-left: 0.4rem;
+}
+
+/* ── Main area (gnomes + strings side by side) ────────────────────────────── */
+
+.bass-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    width: 100%;
+    max-width: 960px;
+    justify-content: center;
+}
+
+/* ── Gnomes image ─────────────────────────────────────────────────────────── */
+
+.bass-gnomes-wrap {
+    flex: 0 0 auto;
+    width: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bass-gnomes-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    user-select: none;
+    pointer-events: none;
+    filter: brightness(0.92);
+    transition:
+        filter 0.5s ease,
+        transform 0.5s ease;
+}
+
+.bass-gnomes-img--happy {
+    filter: brightness(1.1) saturate(1.1);
+    transform: scale(1.06);
+}
+
+/* ── Strings panel ────────────────────────────────────────────────────────── */
+
+.bass-strings-panel {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+    max-width: 580px;
+}
+
+/* ── Single string row ────────────────────────────────────────────────────── */
+
+.bass-string {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 12px;
+    background: #1a1a1e;
+    border: 1px solid #2a2a2e;
+    cursor: pointer;
+    transition:
+        border-color 0.25s,
+        background 0.25s,
+        box-shadow 0.25s;
+    flex-wrap: wrap;
+}
+
+.bass-string:hover {
+    border-color: #3a3a3e;
+}
+
+.bass-string--active {
+    border-color: #555;
+    background: #1e1e24;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.bass-string--tuned {
+    border-color: rgba(76, 175, 80, 0.35);
+    background: rgba(76, 175, 80, 0.06);
+    cursor: default;
+}
+
+/* Note label */
+.bass-string-label {
+    font-size: 1.3rem;
+    font-weight: 800;
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: color 0.3s;
+}
+
+/* Wave SVG */
+.bass-string-svg {
+    flex: 1 1 auto;
+    height: 52px;
+    min-width: 0;
+}
+
+/* ── Controls row (appears when a string is active) ───────────────────────── */
+
+.bass-string-controls {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 0.4rem;
+    flex-wrap: wrap;
+    animation: bass-controlsFadeIn 0.3s ease both;
+}
+
+@keyframes bass-controlsFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+
+.bass-diapason-btn {
+    flex-shrink: 0;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: transparent;
+    color: #e8e8e8;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        border-color 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.bass-diapason-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #888;
+}
+
+.bass-diapason-btn:active {
+    background: rgba(255, 255, 255, 0.13);
+}
+
+.bass-diapason-btn--own {
+    border-color: #446;
+    color: #99aacc;
+}
+
+.bass-diapason-btn--own:hover {
+    border-color: #668;
+    color: #bbd;
+}
+
+/* ── Slider wrap ──────────────────────────────────────────────────────────── */
+
+.bass-slider-wrap {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.bass-slider-label-lo,
+.bass-slider-label-hi {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+}
+
+/* ── Range slider ─────────────────────────────────────────────────────────── */
+/*
+   --slider-color   : the current string's colour (or #4caf50 when tuned)
+   --slider-progress: percentage of thumb position, used for the fill
+*/
+
+.bass-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1 1 auto;
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    background: linear-gradient(
+        to right,
+        var(--slider-color, #e2a155) 0%,
+        var(--slider-color, #e2a155) var(--slider-progress, 50%),
+        #2a2a2e var(--slider-progress, 50%),
+        #2a2a2e 100%
+    );
+    transition: background 0.04s;
+}
+
+/* Webkit thumb */
+.bass-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e8e8e8;
+    border: 2.5px solid var(--slider-color, #e2a155);
+    cursor: grab;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+    transition:
+        transform 0.12s,
+        border-color 0.2s;
+}
+
+.bass-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.18);
+}
+
+.bass-slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.08);
+}
+
+/* Firefox thumb */
+.bass-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e8e8e8;
+    border: 2.5px solid var(--slider-color, #e2a155);
+    cursor: grab;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
+.bass-slider::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background: #2a2a2e;
+}
+
+/* ── Tuned badge ──────────────────────────────────────────────────────────── */
+
+.bass-tuned-badge {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #4caf50;
+    margin-left: auto;
+    padding: 0.2rem 0.65rem;
+    border-radius: 6px;
+    background: rgba(76, 175, 80, 0.12);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    animation: bass-tunedPop 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+@keyframes bass-tunedPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    60% {
+        transform: scale(1.12);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ── Actions ──────────────────────────────────────────────────────────────── */
+
+.bass-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.bass-btn {
+    padding: 0.5rem 1.4rem;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: transparent;
+    color: #e8e8e8;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        border-color 0.15s;
+    font-family: inherit;
+}
+
+.bass-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #888;
+}
+
+.bass-btn--main {
+    border-color: #e8e8e8;
+    font-weight: 600;
+}
+
+.bass-btn--main:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Legend ───────────────────────────────────────────────────────────────── */
+
+.bass-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+    max-width: 580px;
+    width: 100%;
+    border-top: 1px solid #2a2a2a;
+    padding-top: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.bass-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.78rem;
+    color: #888;
+}
+
+.bass-legend-item svg {
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    .bass-main {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .bass-gnomes-wrap {
+        width: 260px;
+    }
+
+    .bass-strings-panel {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+@media (max-width: 520px) {
+    .bass {
+        padding: 1.5rem 0.6rem 3rem;
+        gap: 1rem;
+    }
+
+    .bass-title {
+        font-size: 1.15rem;
+    }
+
+    .bass-instruction {
+        font-size: 0.88rem;
+    }
+
+    .bass-gnomes-wrap {
+        width: 200px;
+    }
+
+    .bass-string {
+        padding: 0.45rem 0.55rem;
+        border-radius: 10px;
+        gap: 0.45rem;
+    }
+
+    .bass-string-label {
+        font-size: 1.05rem;
+        width: 28px;
+    }
+
+    .bass-string-svg {
+        height: 42px;
+    }
+
+    .bass-string-controls {
+        gap: 0.5rem;
+        padding-top: 0.3rem;
+    }
+
+    .bass-diapason-btn {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .bass-slider::-webkit-slider-thumb {
+        width: 18px;
+        height: 18px;
+    }
+
+    .bass-slider::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+    }
+
+    .bass-progress-dot {
+        width: 34px;
+        height: 34px;
+        font-size: 0.7rem;
+    }
+
+    .bass-legend {
+        gap: 0.8rem;
+    }
+
+    .bass-legend-item {
+        font-size: 0.72rem;
+    }
+}
