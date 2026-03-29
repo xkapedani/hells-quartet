@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/hells-quartet/static/css/main.f855e6bc.css",
-    "main.js": "/hells-quartet/static/js/main.790fe199.js",
+    "main.css": "/hells-quartet/static/css/main.9ecf3df3.css",
+    "main.js": "/hells-quartet/static/js/main.e91bf825.js",
     "static/js/453.b2c65378.chunk.js": "/hells-quartet/static/js/453.b2c65378.chunk.js",
-    "static/media/logo.svg": "/hells-quartet/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "static/media/scene.png": "/hells-quartet/static/media/scene.b26e03044f545a1bb6b4.png",
     "index.html": "/hells-quartet/index.html",
-    "main.f855e6bc.css.map": "/hells-quartet/static/css/main.f855e6bc.css.map",
-    "main.790fe199.js.map": "/hells-quartet/static/js/main.790fe199.js.map",
+    "main.9ecf3df3.css.map": "/hells-quartet/static/css/main.9ecf3df3.css.map",
+    "main.e91bf825.js.map": "/hells-quartet/static/js/main.e91bf825.js.map",
     "453.b2c65378.chunk.js.map": "/hells-quartet/static/js/453.b2c65378.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f855e6bc.css",
-    "static/js/main.790fe199.js"
+    "static/css/main.9ecf3df3.css",
+    "static/js/main.e91bf825.js"
   ]
 }
