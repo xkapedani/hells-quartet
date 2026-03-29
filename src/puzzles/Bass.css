@@ -85,21 +85,26 @@
 
 .bass-main {
     display: flex;
-    align-items: flex-start;
-    gap: 2rem;
+    align-items: flex-end;
+    gap: 1.5rem;
     width: 100%;
-    max-width: 960px;
-    justify-content: center;
+    max-width: 1140px;
+    justify-content: space-between;
 }
 
 /* ── Gnomes image ─────────────────────────────────────────────────────────── */
 
 .bass-gnomes-wrap {
     flex: 0 0 auto;
-    width: 480px;
+    width: 700px;
     display: flex;
     align-items: flex-end;
-    justify-content: center;
+    justify-content: flex-start;
+    align-self: flex-start;
+    transform: translateY(3rem);
+    margin-left: 0;
+    position: relative;
+    z-index: 2;
 }
 
 .bass-gnomes-img {
@@ -122,12 +127,12 @@
 /* ── Strings panel ────────────────────────────────────────────────────────── */
 
 .bass-strings-panel {
-    flex: 1 1 auto;
+    flex: 0 0 440px;
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    min-width: 0;
-    max-width: 580px;
+    min-width: 420px;
+    max-width: 480px;
     background: rgba(0, 0, 0, 0.45);
     border-radius: 16px;
     padding: 1rem;
@@ -411,6 +416,8 @@
 
     .bass-gnomes-wrap {
         width: 320px;
+        transform: translateY(-5rem);
+        align-self: flex-start;
     }
 
     .bass-strings-panel {
