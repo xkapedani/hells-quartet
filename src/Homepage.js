@@ -74,6 +74,7 @@ export default function Homepage() {
         drums: false,
         bass: false,
         trio: false,
+        piano: false,
     });
 
     useEffect(() => {
@@ -82,9 +83,10 @@ export default function Homepage() {
                 localStorage.getItem("puzzle-drums-completed") === "1";
             const bass = localStorage.getItem("puzzle-bass-completed") === "1";
             const trio = localStorage.getItem("puzzle-trio-completed") === "1";
-            setCompletedPuzzles({ drums, bass, trio });
+            const piano = localStorage.getItem("puzzle-piano-completed") === "1";
+            setCompletedPuzzles({ drums, bass, trio, piano });
         } catch (e) {
-            setCompletedPuzzles({ drums: false, bass: false, trio: false });
+            setCompletedPuzzles({ drums: false, bass: false, trio: false, piano: false });
         }
     }, []);
 
@@ -184,15 +186,16 @@ export default function Homepage() {
     function handleBack() {
         setOverlayVisible(false);
         // refresh completed puzzle flags immediately so homepage reflects changes
-        try {
-            const drums =
-                localStorage.getItem("puzzle-drums-completed") === "1";
-            const bass = localStorage.getItem("puzzle-bass-completed") === "1";
-            const trio = localStorage.getItem("puzzle-trio-completed") === "1";
-            setCompletedPuzzles({ drums, bass, trio });
-        } catch (e) {
-            setCompletedPuzzles({ drums: false, bass: false, trio: false });
-        }
+            try {
+                const drums =
+                    localStorage.getItem("puzzle-drums-completed") === "1";
+                const bass = localStorage.getItem("puzzle-bass-completed") === "1";
+                const trio = localStorage.getItem("puzzle-trio-completed") === "1";
+                const piano = localStorage.getItem("puzzle-piano-completed") === "1";
+                setCompletedPuzzles({ drums, bass, trio, piano });
+            } catch (e) {
+                setCompletedPuzzles({ drums: false, bass: false, trio: false, piano: false });
+            }
         setTimeout(() => {
             setShowOverlay(false);
             setSelectedId(null);
@@ -287,6 +290,8 @@ export default function Homepage() {
                                                     ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
                                                     : char.id === "gnomes" && completedPuzzles.bass
                                                     ? `${PUBLIC}/images/gnomes_heureux.png`
+                                                    : char.id === "millepattes" && completedPuzzles.piano
+                                                    ? `${PUBLIC}/images/mille_pattes_heureux.png`
                                                     : `${PUBLIC}${char.image}`
                                             }
                             alt={char.name}

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as Tone from "tone";
 import "./Piano.css";
+import DialogBox from "../components/DialogBox";
+import { useNavigate } from "react-router-dom";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
@@ -23,8 +25,27 @@ function randomNote() {
 export default function Piano() {
     const [target, setTarget] = useState(() => randomNote());
     const [droppedCorrect, setDroppedCorrect] = useState(false);
+    const [stars, setStars] = useState(() => {
+        try {
+            const v = localStorage.getItem("puzzle-piano-stars");
+            return v ? Math.min(5, parseInt(v, 10) || 0) : 0;
+        } catch (e) {
+            return 0;
+        }
+    });
     const synthRef = useRef(null);
     const toneStartedRef = useRef(false);
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState("");
+    const [dialogAvatar, setDialogAvatar] = useState(null);
+    const [pianoCompleted, setPianoCompleted] = useState(() => {
+        try {
+            return localStorage.getItem("puzzle-piano-completed") === "1";
+        } catch (e) {
+            return false;
+        }
+    });
+    const navigate = useNavigate();
 
     useEffect(() => {
         const s = new Tone.Synth({
@@ -35,6 +56,60 @@ export default function Piano() {
         synthRef.current = s;
         return () => s.dispose();
     }, []);
+
+    function showDialog(msg, opts = {}) {
+        setDialogMessage(msg);
+        setDialogAvatar(opts.avatar || null);
+        setDialogVisible(true);
+    }
+
+    useEffect(() => {
+        // show intro dialog once on mount
+        const avatar = `${PUBLIC}/images/mille_pattes_fache.png`;
+        showDialog("Bonjour ! Clique sur Millody pour entendre la note, puis glisse-la sur la portée.", { avatar });
+        const target = document;
+        const hide = () => setDialogVisible(false);
+        try {
+            target.addEventListener("pointerdown", hide, { once: true });
+        } catch (e) {
+            target.addEventListener("pointerdown", hide);
+        }
+        return () => {
+            try {
+                target.removeEventListener("pointerdown", hide, { once: true });
+            } catch (e) {
+                target.removeEventListener("pointerdown", hide);
+            }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (!pianoCompleted) return;
+        // when completed, show end dialog if not already visible (covers reload case)
+        const avatar = `${PUBLIC}/images/mille_pattes_heureux.png`;
+        showDialog("Magnifique ! Millody est désormais heureuse. Clique pour revenir à l'accueil.", { avatar });
+        // on next pointerdown, navigate back to homepage
+        const handler = () => {
+            setDialogVisible(false);
+            try {
+                navigate("/hells-quartet");
+            } catch (e) {}
+        };
+        try {
+            document.addEventListener("pointerdown", handler, { once: true });
+        } catch (e) {
+            document.addEventListener("pointerdown", handler);
+        }
+        return () => {
+            try {
+                document.removeEventListener("pointerdown", handler, { once: true });
+            } catch (e) {
+                document.removeEventListener("pointerdown", handler);
+            }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pianoCompleted]);
 
     const ensureTone = useCallback(async () => {
         if (!toneStartedRef.current) {
@@ -80,6 +155,23 @@ export default function Piano() {
         const dragged = e.dataTransfer.getData("text/plain");
         if (dragged === zoneNote) {
             setDroppedCorrect(true);
+            setStars((prev) => {
+                if (prev >= 5) return prev;
+                const next = prev + 1;
+                try {
+                    localStorage.setItem("puzzle-piano-stars", String(next));
+                    if (next >= 5) {
+                        localStorage.setItem("puzzle-piano-completed", "1");
+                        setPianoCompleted(true);
+                        // show end dialog
+                        const avatar = `${PUBLIC}/images/mille_pattes_heureux.png`;
+                        setDialogAvatar(avatar);
+                        setDialogMessage("Bravo ! Millody est heureuse 🎉");
+                        setDialogVisible(true);
+                    }
+                } catch (err) {}
+                return next;
+            });
         } else {
             setDroppedCorrect(false);
         }
@@ -91,9 +183,21 @@ export default function Piano() {
 
     return (
         <div className="piano-grid" style={{ backgroundImage: `url(${PUBLIC}/images/scene.png)` }}>
+            <DialogBox
+                message={dialogMessage}
+                visible={dialogVisible}
+                onClose={() => setDialogVisible(false)}
+                autoCloseMs={0}
+                avatar={dialogAvatar}
+                position="bottom"
+            />
             <div className="piano-left">
                 <img
-                    src={`${PUBLIC}/images/mille_pattes_fache.png`}
+                    src={
+                        pianoCompleted
+                            ? `${PUBLIC}/images/mille_pattes_heureux.png`
+                            : `${PUBLIC}/images/mille_pattes_fache.png`
+                    }
                     alt="piano"
                     className="piano-image"
                     onClick={handleImageClick}
@@ -103,6 +207,19 @@ export default function Piano() {
             </div>
 
             <div className="piano-right">
+                <div className="piano-stars" aria-hidden>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <img
+                            key={i}
+                            src={
+                                i < stars
+                                    ? `${PUBLIC}/images/star-full.png`
+                                    : `${PUBLIC}/images/star-empty.png`
+                            }
+                            alt={i < stars ? `Star ${i + 1} full` : `Star ${i + 1} empty`}
+                        />
+                    ))}
+                </div>
                 <div className="note-pick-area">
                     <div
                         className="draggable-note"

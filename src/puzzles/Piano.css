@@ -49,6 +49,17 @@
   margin-bottom: 16px;
 }
 
+.piano-stars {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.piano-stars img {
+  width: 64px;
+  height: 64px;
+}
+
 .draggable-note {
   background: #222;
   color: #fff;
