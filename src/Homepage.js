@@ -282,9 +282,31 @@ export default function Homepage() {
 
     const selectedChar = CHARACTERS.find((c) => c.id === selectedId);
     const PuzzleComponent = selectedChar ? selectedChar.component : null;
+    const [thankYouSeen, setThankYouSeen] = useState(false);
+    const [showThankYou, setShowThankYou] = useState(false);
+
+    useEffect(() => {
+        try {
+            if (localStorage.getItem("thank-you-shown") === "1") {
+                setThankYouSeen(true);
+            }
+        } catch (e) {}
+    }, []);
+
     const allHappy =
         completedPuzzles &&
         Object.values(completedPuzzles).every((v) => Boolean(v));
+
+    useEffect(() => {
+        if (allHappy && !thankYouSeen) {
+            // show the thank-you dialog once and persist that we've shown it
+            setShowThankYou(true);
+            setThankYouSeen(true);
+            try {
+                localStorage.setItem("thank-you-shown", "1");
+            } catch (e) {}
+        }
+    }, [allHappy, thankYouSeen]);
 
     function handleRecommencer() {
         try {
@@ -557,11 +579,12 @@ export default function Homepage() {
                     </div>
                 </div>
             )}
-            {allHappy && !showOverlay && (
-                <div className="hp-victory" role="status">
-                    <DialogBox
-                        message={"merci d'avoir aidé les monstres"}
-                        visible={true}
+            {!showOverlay && (
+                    <div className="hp-victory" role="status">
+                        <DialogBox
+                            message={"Merci d'avoir aidé les monstres ! Tu peux recommencer une partie pour rejouer les puzzles et la musique autant de fois que tu veux !"}
+                            visible={showThankYou}
+                            onClose={() => setShowThankYou(false)}
                         autoCloseMs={0}
                         position="bottom"
                     />
