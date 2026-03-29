@@ -118,6 +118,8 @@ export default function Trio({ onClose }) {
     }
 
     useEffect(() => {
+        if (cerbereHappy) return;
+
         const avatar = `${PUBLIC}/images/cerbere_triste.png`;
         showDialog(
             "Roh, on n'arrive pas à différencier les sons de nos instruments… Peux-tu nous aider ?",
