@@ -287,10 +287,6 @@ export default function Bass() {
         try {
             const done = localStorage.getItem("puzzle-bass-completed");
             if (done === "1") {
-                // setPieuvreHappy(true);
-                // setCompletedExamples([true, true, true]);
-                // setCurrentExampleIndex(null);
-                // setMessage("Le puzzle est déjà terminé.");
                 setGnomesHappy(true);
                 setTunedArr(STRINGS.map(() => true));
                 setPlayerHzArr(STRINGS.map((s) => s.targetHz));
@@ -496,6 +492,15 @@ export default function Bass() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleReset = useCallback(() => {
+        setAllTuned(false);
+        setGnomesHappy(true);
+        setTunedArr(STRINGS.map(() => false));
+        setPlayerHzArr(STRINGS.map((s) => randomStartHz(s.targetHz)));
+        setActiveIdx(0);
+        setDialogVisible(false);
+    }, []);
+
     /* ── Reset ───────────────────────────────────────────────────────────── */
 
     /* ── Render ──────────────────────────────────────────────────────────── */
@@ -519,6 +524,15 @@ export default function Bass() {
                     ? "Toutes les cordes sont parfaitement accordées ! Les gnomes sont contents !"
                     : "Chaque corde est désaccordée. Écoute la note de référence, puis déplace le curseur jusqu'à trouver la bonne note."}
             </p>
+            <div className="bass-actions">
+                <button
+                    type="button"
+                    className="bass-btn bass-btn--main"
+                    onClick={handleReset}
+                >
+                    Réinitialiser
+                </button>
+            </div>
 
             {/* Progress dots */}
             <div className="bass-progress">
