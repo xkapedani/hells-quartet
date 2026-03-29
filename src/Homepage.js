@@ -596,7 +596,7 @@ export default function Homepage() {
             {allHappy && !showOverlay && (
                 <div className="hp-victory-actions" aria-hidden={false}>
                     <button className="hp-restart-btn" onClick={handleRecommencer}>
-                        recommencer
+                        Réinitialiser le Quartet
                     </button>
                 </div>
             )}

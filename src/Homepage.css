@@ -485,7 +485,8 @@
 .hp-victory-actions {
     position: fixed;
     bottom: 1.25rem;
-    left: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 950;
     margin: 0;
 }
@@ -495,7 +496,11 @@
     border: 0;
     padding: 0.6rem 1.05rem;
     border-radius: 10px;
-    background: linear-gradient(180deg, #ff6b6b, #c83232);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     color: #fff;
     font-weight: 700;
     cursor: pointer;
