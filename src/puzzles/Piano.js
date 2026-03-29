@@ -25,14 +25,7 @@ function randomNote() {
 export default function Piano() {
     const [target, setTarget] = useState(() => randomNote());
     const [droppedCorrect, setDroppedCorrect] = useState(false);
-    const [stars, setStars] = useState(() => {
-        try {
-            const v = localStorage.getItem("puzzle-piano-stars");
-            return v ? Math.min(5, parseInt(v, 10) || 0) : 0;
-        } catch (e) {
-            return 0;
-        }
-    });
+    const [stars, setStars] = useState(0);
     const synthRef = useRef(null);
     const toneStartedRef = useRef(false);
     const [dialogVisible, setDialogVisible] = useState(false);
@@ -158,18 +151,17 @@ export default function Piano() {
             setStars((prev) => {
                 if (prev >= 5) return prev;
                 const next = prev + 1;
-                try {
-                    localStorage.setItem("puzzle-piano-stars", String(next));
-                    if (next >= 5) {
+                if (next >= 5) {
+                    try {
                         localStorage.setItem("puzzle-piano-completed", "1");
-                        setPianoCompleted(true);
-                        // show end dialog
-                        const avatar = `${PUBLIC}/images/mille_pattes_heureux.png`;
-                        setDialogAvatar(avatar);
-                        setDialogMessage("Bravo ! Millody est heureuse 🎉");
-                        setDialogVisible(true);
-                    }
-                } catch (err) {}
+                    } catch (err) {}
+                    setPianoCompleted(true);
+                    // show end dialog
+                    const avatar = `${PUBLIC}/images/mille_pattes_heureux.png`;
+                    setDialogAvatar(avatar);
+                    setDialogMessage("Bravo ! Millody est heureuse 🎉");
+                    setDialogVisible(true);
+                }
                 return next;
             });
         } else {
