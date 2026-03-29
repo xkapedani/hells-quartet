@@ -223,6 +223,12 @@ export default function Homepage() {
                     </div>
                 </div>
 
+                <div className="hp-hero-lore-box">
+                    <p className="hp-hero-lore">
+                        Bienvenue en enfer, tu as été désigné pour aider le Quartet de l'Enfer à régler ses problèmes afin de pouvoir rejouer en harmonie tous ensemble, aide chaque musicien à retrouver sa musique !
+                    </p>
+                </div>
+
                 <div
                     className={
                         "hp-arrows" +
