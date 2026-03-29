@@ -46,30 +46,17 @@ function Drums({ onClose, resetOnOpen = false }) {
 
     useEffect(() => {
         // set initial pattern from first example, or restore completion from localStorage
-        // If opened from the homepage overlay we want to allow replay even when
-        // the puzzle was previously completed, so ignore saved completion
-        // when `resetOnOpen` is true.
+        // Always use localStorage to determine whether this puzzle is completed.
         try {
-            if (resetOnOpen) {
-                // reset progression when opened from the homepage overlay.
-                // show the octopus in the default (not-happy) state so the
-                // player can replay the puzzle normally.
-                setPieuvreHappy(false);
-                setCompletedExamples([false, false, false]);
+            const done = localStorage.getItem("puzzle-drums-completed");
+            if (done === "1") {
+                setPieuvreHappy(true);
+                setCompletedExamples([true, true, true]);
+                setCurrentExampleIndex(null);
+                setMessage("Le puzzle est déjà terminé.");
+            } else {
                 setPattern(examples[0]);
                 setCurrentExampleIndex(0);
-                setMessage("");
-            } else {
-                const done = localStorage.getItem("puzzle-drums-completed");
-                if (done === "1") {
-                    setPieuvreHappy(true);
-                    setCompletedExamples([true, true, true]);
-                    setCurrentExampleIndex(null);
-                    setMessage("Le puzzle est déjà terminé.");
-                } else {
-                    setPattern(examples[0]);
-                    setCurrentExampleIndex(0);
-                }
             }
         } catch (e) {
             setPattern(examples[0]);
