@@ -224,24 +224,23 @@ export default function Homepage() {
     }
 
     function updateMusicOnBack() {
-        
         // Play corresponding happy music following which puzzle was completed
         if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
             PlayFromFile("final-song.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-drums-bass.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.piano) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-drums-piano.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-bass-piano.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile(".mp3");
+            PlayFromFile("drums-bass-piano.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-drums.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.bass) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-bass.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.piano) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-piano.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.bass) {
             PlayFromFile("bass-drums.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.piano) {
