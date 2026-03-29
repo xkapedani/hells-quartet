@@ -5,7 +5,7 @@ import Drums from "./puzzles/Drums";
 import Piano from "./puzzles/Piano";
 import Bass from "./puzzles/Bass";
 import * as Tone from "tone";
-import { PlayFromFile } from "./Player.js";
+import { PlayFromFile, stopCurrent } from "./Player.js";
 import DialogBox from "./components/DialogBox";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
@@ -216,6 +216,7 @@ export default function Homepage() {
 
     function handleCharacterClick(char) {
         if (!char.ready) return;
+        stopCurrent();
         setSelectedId(char.id);
         setShowOverlay(true);
         requestAnimationFrame(() => {
