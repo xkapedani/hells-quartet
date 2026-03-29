@@ -95,6 +95,30 @@
     animation: hp-fadeIn 1.2s 0.5s ease both;
 }
 
+.hp-hero-lore-box {
+    margin: 1.8rem auto 0;
+    max-width: 760px;
+    padding: 1.05rem 1.3rem;
+    border-radius: 18px;
+    background: rgba(10, 8, 14, 0.28);
+    backdrop-filter: blur(10px) saturate(105%);
+    -webkit-backdrop-filter: blur(10px) saturate(105%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    animation: hp-fadeIn 1.2s 0.5s ease both;
+}
+
+.hp-hero-lore {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #f2e8d5;
+    line-height: 1.8;
+    text-align: center;
+    letter-spacing: 0.01em;
+}
+
 .hp-arrows {
     position: absolute;
     bottom: 2.5rem;
