@@ -3,7 +3,7 @@ import { PlayFromFile } from "../Player";
 import Particles from "./Particles";
 import DialogBox from "../components/DialogBox";
 
-function Drums({ onClose }) {
+function Drums({ onClose, resetOnOpen = false }) {
     const [pattern, setPattern] = useState([]); // cumulative times in ms
     const [playing, setPlaying] = useState(false);
     const [recording, setRecording] = useState(false);
@@ -42,16 +42,29 @@ function Drums({ onClose }) {
 
     useEffect(() => {
         // set initial pattern from first example, or restore completion from localStorage
+        // If opened from the homepage overlay we want to allow replay even when
+        // the puzzle was previously completed, so ignore saved completion
+        // when `resetOnOpen` is true.
         try {
-            const done = localStorage.getItem("puzzle-drums-completed");
-            if (done === "1") {
+            if (resetOnOpen) {
+                // keep the octopus visually happy but reset progression so the
+                // player can replay the puzzle with the happy octopus
                 setPieuvreHappy(true);
-                setCompletedExamples([true, true, true]);
-                setCurrentExampleIndex(null);
-                setMessage("Le puzzle est déjà terminé.");
-            } else {
+                setCompletedExamples([false, false, false]);
                 setPattern(examples[0]);
                 setCurrentExampleIndex(0);
+                setMessage("");
+            } else {
+                const done = localStorage.getItem("puzzle-drums-completed");
+                if (done === "1") {
+                    setPieuvreHappy(true);
+                    setCompletedExamples([true, true, true]);
+                    setCurrentExampleIndex(null);
+                    setMessage("Le puzzle est déjà terminé.");
+                } else {
+                    setPattern(examples[0]);
+                    setCurrentExampleIndex(0);
+                }
             }
         } catch (e) {
             setPattern(examples[0]);
@@ -117,7 +130,10 @@ function Drums({ onClose }) {
             const target = containerRef.current || document;
             const hideOnFirst = () => {
                 setDialogVisible(false);
-                if (typeof onClose === "function") onClose();
+                // If this screen was opened with resetOnOpen we don't want to
+                // immediately close the puzzle when the user clicks; allow
+                // them to interact while the octopus remains happy.
+                if (!resetOnOpen && typeof onClose === "function") onClose();
             };
             try {
                 target.addEventListener("pointerdown", hideOnFirst, { once: true });

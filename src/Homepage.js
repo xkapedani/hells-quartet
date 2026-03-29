@@ -4,6 +4,8 @@ import Trio from "./puzzles/Trio";
 import Drums from "./puzzles/Drums";
 import Piano from "./puzzles/Piano";
 import Bass from "./puzzles/Bass";
+import * as Tone from "tone";
+import { PlayFromFile } from "./Player.js";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
@@ -88,10 +90,16 @@ export default function Homepage() {
                 localStorage.getItem("puzzle-drums-completed") === "1";
             const bass = localStorage.getItem("puzzle-bass-completed") === "1";
             const trio = localStorage.getItem("puzzle-trio-completed") === "1";
-            const piano = localStorage.getItem("puzzle-piano-completed") === "1";
+            const piano =
+                localStorage.getItem("puzzle-piano-completed") === "1";
             setCompletedPuzzles({ drums, bass, trio, piano });
         } catch (e) {
-            setCompletedPuzzles({ drums: false, bass: false, trio: false, piano: false });
+            setCompletedPuzzles({
+                drums: false,
+                bass: false,
+                trio: false,
+                piano: false,
+            });
         }
     }, []);
 
@@ -184,7 +192,7 @@ export default function Homepage() {
     }, []);
 
     function handleIntroClick() {
-        // trigger fade-out
+        PlayFromFile("gnomes-Bass.mp3");
         setIntroVisible(false);
         // remove from DOM after transition
         introTimeoutRef.current = setTimeout(() => setIntroMounted(false), 600);
@@ -202,16 +210,22 @@ export default function Homepage() {
     function handleBack() {
         setOverlayVisible(false);
         // refresh completed puzzle flags immediately so homepage reflects changes
-            try {
-                const drums =
-                    localStorage.getItem("puzzle-drums-completed") === "1";
-                const bass = localStorage.getItem("puzzle-bass-completed") === "1";
-                const trio = localStorage.getItem("puzzle-trio-completed") === "1";
-                const piano = localStorage.getItem("puzzle-piano-completed") === "1";
-                setCompletedPuzzles({ drums, bass, trio, piano });
-            } catch (e) {
-                setCompletedPuzzles({ drums: false, bass: false, trio: false, piano: false });
-            }
+        try {
+            const drums =
+                localStorage.getItem("puzzle-drums-completed") === "1";
+            const bass = localStorage.getItem("puzzle-bass-completed") === "1";
+            const trio = localStorage.getItem("puzzle-trio-completed") === "1";
+            const piano =
+                localStorage.getItem("puzzle-piano-completed") === "1";
+            setCompletedPuzzles({ drums, bass, trio, piano });
+        } catch (e) {
+            setCompletedPuzzles({
+                drums: false,
+                bass: false,
+                trio: false,
+                piano: false,
+            });
+        }
         setTimeout(() => {
             setShowOverlay(false);
             setSelectedId(null);
@@ -234,7 +248,10 @@ export default function Homepage() {
 
                 {introMounted && (
                     <div
-                        className={"hp-intro-image" + (introVisible ? "" : " hp-intro-image--hidden")}
+                        className={
+                            "hp-intro-image" +
+                            (introVisible ? "" : " hp-intro-image--hidden")
+                        }
                         onClick={handleIntroClick}
                         role="button"
                         aria-label="Intro image - click to continue"
@@ -242,7 +259,9 @@ export default function Homepage() {
                         onKeyDown={(e) => {
                             if (e.key === "Enter") handleIntroClick();
                         }}
-                        style={{ backgroundImage: `url(${PUBLIC}/images/scene-ferme.png)` }}
+                        style={{
+                            backgroundImage: `url(${PUBLIC}/images/scene-ferme.png)`,
+                        }}
                     />
                 )}
 
@@ -258,7 +277,10 @@ export default function Homepage() {
 
                 <div className="hp-hero-lore-box">
                     <p className="hp-hero-lore">
-                        Bienvenue chez les monstres, tu as été désigné pour aider le Quartet de l'Enfer à régler ses problèmes afin qu'ils puissent rejouer en harmonie tous ensemble. Aide chaque musicien à retrouver sa musique !
+                        Bienvenue chez les monstres, tu as été désigné pour
+                        aider le Quartet de l'Enfer à régler ses problèmes afin
+                        qu'ils puissent rejouer en harmonie tous ensemble. Aide
+                        chaque musicien à retrouver sa musique !
                     </p>
                 </div>
 
@@ -312,18 +334,21 @@ export default function Homepage() {
                         onMouseLeave={() => setHoveredId(null)}
                         aria-label={char.name}
                     >
-                                        <img
-                                            src={
-                                                char.id === "cerbere" && completedPuzzles.trio
-                                                    ? `${PUBLIC}/images/cerbere_heureux.png`
-                                                    : char.id === "pieuvre" && completedPuzzles.drums
-                                                    ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
-                                                    : char.id === "gnomes" && completedPuzzles.bass
-                                                    ? `${PUBLIC}/images/gnomes_heureux.png`
-                                                    : char.id === "millepattes" && completedPuzzles.piano
-                                                    ? `${PUBLIC}/images/mille_pattes_heureux.png`
-                                                    : `${PUBLIC}${char.image}`
-                                            }
+                        <img
+                            src={
+                                char.id === "cerbere" && completedPuzzles.trio
+                                    ? `${PUBLIC}/images/cerbere_heureux.png`
+                                    : char.id === "pieuvre" &&
+                                        completedPuzzles.drums
+                                      ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
+                                      : char.id === "gnomes" &&
+                                          completedPuzzles.bass
+                                        ? `${PUBLIC}/images/gnomes_heureux.png`
+                                        : char.id === "millepattes" &&
+                                            completedPuzzles.piano
+                                          ? `${PUBLIC}/images/mille_pattes_heureux.png`
+                                          : `${PUBLIC}${char.image}`
+                            }
                             alt={char.name}
                             className="hp-char-img"
                             draggable={false}
@@ -447,7 +472,7 @@ export default function Homepage() {
 
                     <div className="hp-overlay-content">
                         {PuzzleComponent ? (
-                            <PuzzleComponent onClose={handleBack} />
+                            <PuzzleComponent onClose={handleBack} resetOnOpen={true} />
                         ) : (
                             <div className="hp-coming-soon">
                                 <img
@@ -457,7 +482,8 @@ export default function Homepage() {
                                     draggable={false}
                                 />
                                 <p className="hp-coming-soon-title">
-                                    Ce puzzle est en cours de construction&hellip;
+                                    Ce puzzle est en cours de
+                                    construction&hellip;
                                 </p>
                                 <p className="hp-coming-soon-sub">
                                     Revenez bientôt !

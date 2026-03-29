@@ -118,15 +118,31 @@ export default function Trio({ onClose }) {
     }
 
     useEffect(() => {
-        if (cerbereHappy) return;
+        const target = document;
+        const hideOnFirst = () => setDialogVisible(false);
+
+        if (cerbereHappy) {
+            // show completion dialog when opening from homepage and already completed
+            showDialog("Merci ! Je suis heureux maintenant !", { avatar: `${PUBLIC}/images/cerbere_heureux.png` });
+            try {
+                target.addEventListener("pointerdown", hideOnFirst, { once: true });
+            } catch (e) {
+                target.addEventListener("pointerdown", hideOnFirst);
+            }
+            return () => {
+                try {
+                    target.removeEventListener("pointerdown", hideOnFirst, { once: true });
+                } catch (e) {
+                    target.removeEventListener("pointerdown", hideOnFirst);
+                }
+            };
+        }
 
         const avatar = `${PUBLIC}/images/cerbere_triste.png`;
         showDialog(
             "Roh, on n'arrive pas à différencier les sons de nos instruments… Peux-tu nous aider ?",
             { avatar },
         );
-        const target = document;
-        const hideOnFirst = () => setDialogVisible(false);
         try {
             target.addEventListener("pointerdown", hideOnFirst, { once: true });
         } catch (e) {
