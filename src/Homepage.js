@@ -61,9 +61,14 @@ export default function Homepage() {
     const [selectedId, setSelectedId] = useState(null);
     const [showOverlay, setShowOverlay] = useState(false);
     const [overlayVisible, setOverlayVisible] = useState(false);
+    // Intro full-page image visibility (click to fade out and reveal title)
+    const [introMounted, setIntroMounted] = useState(true);
+    const [introVisible, setIntroVisible] = useState(true);
 
     const [arrowsVisible, setArrowsVisible] = useState(true);
     const stageRef = useRef(null);
+
+    const introTimeoutRef = useRef(null);
 
     const bgAudioRef = useRef(null);
     const [musicPlaying, setMusicPlaying] = useState(false);
@@ -171,8 +176,19 @@ export default function Homepage() {
                 bgAudioRef.current.pause();
                 bgAudioRef.current = null;
             }
+            // cleanup possible intro timeout
+            if (introTimeoutRef.current) {
+                clearTimeout(introTimeoutRef.current);
+            }
         };
     }, []);
+
+    function handleIntroClick() {
+        // trigger fade-out
+        setIntroVisible(false);
+        // remove from DOM after transition
+        introTimeoutRef.current = setTimeout(() => setIntroMounted(false), 600);
+    }
 
     function handleCharacterClick(char) {
         if (!char.ready) return;
@@ -215,6 +231,20 @@ export default function Homepage() {
         <div className="hp">
             <section className="hp-hero">
                 <div className="hp-hero-bg" />
+
+                {introMounted && (
+                    <div
+                        className={"hp-intro-image" + (introVisible ? "" : " hp-intro-image--hidden")}
+                        onClick={handleIntroClick}
+                        role="button"
+                        aria-label="Intro image - click to continue"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") handleIntroClick();
+                        }}
+                        style={{ backgroundImage: `url(${PUBLIC}/images/scene-ferme.png)` }}
+                    />
+                )}
 
                 <div className="hp-hero-title-box">
                     <div className="hp-hero-content">
