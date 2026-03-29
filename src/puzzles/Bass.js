@@ -281,7 +281,7 @@ export default function Bass() {
     }
 
     /* ── get from localStorage ───────────────────────────────────────────────────── */
-    
+
     useEffect(() => {
         // set initial pattern from first example, or restore completion from localStorage
         try {
@@ -292,8 +292,7 @@ export default function Bass() {
                 setPlayerHzArr(STRINGS.map((s) => s.targetHz));
             } else {
             }
-        } catch (e) {
-        }
+        } catch (e) {}
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -518,7 +517,7 @@ export default function Bass() {
                 position="bottom"
             />
 
-            <h1 className="bass-title">Accorde la contrebasse des gnomes</h1>
+            <h1 className="bass-title">Contre & Basse ont besoin d'aide</h1>
             <p className="bass-instruction">
                 {allTuned
                     ? "Toutes les cordes sont parfaitement accordées ! Les gnomes sont contents !"
