@@ -5,7 +5,7 @@ import Drums from "./puzzles/Drums";
 import Piano from "./puzzles/Piano";
 import Bass from "./puzzles/Bass";
 import * as Tone from "tone";
-import { PlayFromFile } from "./Player.js";
+import { PlayFromFile, stopCurrent } from "./Player.js";
 import DialogBox from "./components/DialogBox";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
@@ -223,6 +223,7 @@ export default function Homepage() {
 
     function handleCharacterClick(char) {
         if (!char.ready) return;
+        stopCurrent();
         setSelectedId(char.id);
         setShowOverlay(true);
         requestAnimationFrame(() => {
@@ -235,19 +236,19 @@ export default function Homepage() {
         if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
             PlayFromFile("quartet-complete/quartet-complete.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass) {
-            PlayFromFile("trio-complete/trio-complete.mp3");
+            PlayFromFile("trio-drums-bass.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.piano) {
-            PlayFromFile("trio-complete/trio-complete.mp3");
+            PlayFromFile("trio-drums-piano.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile("trio-complete/trio-complete.mp3");
+            PlayFromFile("trio-bass-piano.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile("drums-bass-piano/drums-bass-piano.mp3");
+            PlayFromFile("drums-bass-piano.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums) {
-            PlayFromFile("trio-drums/trio-drums.mp3");
+            PlayFromFile("trio-drums.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.bass) {
-            PlayFromFile("trio-bass/trio-bass.mp3");
+            PlayFromFile("trio-bass.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.piano) {
-            PlayFromFile("trio-piano/trio-piano.mp3");
+            PlayFromFile("trio-piano.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.bass) {
             PlayFromFile("drums-bass/drums-bass.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.piano) {
@@ -333,7 +334,7 @@ export default function Homepage() {
                         />
 
                         <DialogBox
-                            message={"Bienvenue au spectacle des enfers ! Chut, le spectacle va commencer..."}
+                            message={"Bienvenue au spectacle ! Chut, le spectacle va commencer..."}
                             visible={introVisible}
                             position="bottom"
                         />
