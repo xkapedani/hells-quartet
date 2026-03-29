@@ -539,9 +539,18 @@ export default function Homepage() {
                         <div className="hp-overlay-bar-info">
                             <img
                                 src={
-                                    selectedChar.id === "pieuvre" &&
-                                    completedPuzzles.drums
+                                    selectedChar.id === "cerbere" &&
+                                    completedPuzzles.trio
+                                        ? `${PUBLIC}/images/cerbere_heureux.png`
+                                        : selectedChar.id === "millepattes" &&
+                                          completedPuzzles.piano
+                                        ? `${PUBLIC}/images/mille_pattes_heureux.png`
+                                        : selectedChar.id === "pieuvre" &&
+                                          completedPuzzles.drums
                                         ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
+                                        : selectedChar.id === "gnomes" &&
+                                          completedPuzzles.bass
+                                        ? `${PUBLIC}/images/gnomes_heureux.png`
                                         : `${PUBLIC}${selectedChar.image}`
                                 }
                                 alt=""
