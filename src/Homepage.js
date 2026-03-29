@@ -6,6 +6,7 @@ import Piano from "./puzzles/Piano";
 import Bass from "./puzzles/Bass";
 import * as Tone from "tone";
 import { PlayFromFile } from "./Player.js";
+import DialogBox from "./components/DialogBox";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
@@ -66,6 +67,7 @@ export default function Homepage() {
     // Intro full-page image visibility (click to fade out and reveal title)
     const [introMounted, setIntroMounted] = useState(true);
     const [introVisible, setIntroVisible] = useState(true);
+    const [heroDialogVisible, setHeroDialogVisible] = useState(false);
 
     const [arrowsVisible, setArrowsVisible] = useState(true);
     const stageRef = useRef(null);
@@ -102,6 +104,10 @@ export default function Homepage() {
             });
         }
     }, []);
+
+    useEffect(() => {
+        if (!introMounted) setHeroDialogVisible(true);
+    }, [introMounted]);
 
     useEffect(() => {
         function onScroll() {
@@ -207,6 +213,41 @@ export default function Homepage() {
         });
     }
 
+    function updateMusicOnBack() {
+        // Play corresponding happy music following which puzzle was completed
+        if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
+            PlayFromFile("quartet-complete/quartet-complete.mp3");
+        } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass) {
+            PlayFromFile("trio-complete/trio-complete.mp3");
+        } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.piano) {
+            PlayFromFile("trio-complete/trio-complete.mp3");
+        } else if (completedPuzzles.trio && completedPuzzles.bass && completedPuzzles.piano) {
+            PlayFromFile("trio-complete/trio-complete.mp3");
+        } else if (completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
+            PlayFromFile("drums-bass-piano/drums-bass-piano.mp3");
+        } else if (completedPuzzles.trio && completedPuzzles.drums) {
+            PlayFromFile("trio-drums/trio-drums.mp3");
+        } else if (completedPuzzles.trio && completedPuzzles.bass) {
+            PlayFromFile("trio-bass/trio-bass.mp3");
+        } else if (completedPuzzles.trio && completedPuzzles.piano) {
+            PlayFromFile("trio-piano/trio-piano.mp3");
+        } else if (completedPuzzles.drums && completedPuzzles.bass) {
+            PlayFromFile("drums-bass/drums-bass.mp3");
+        } else if (completedPuzzles.drums && completedPuzzles.piano) {
+            PlayFromFile("drums-piano/drums-piano.mp3");
+        } else if (completedPuzzles.bass && completedPuzzles.piano) {
+            PlayFromFile("bass-piano/bass-piano.mp3");
+        } else if (completedPuzzles.trio) {
+            PlayFromFile("trio-alone/trio-alone.mp3");
+        } else if (completedPuzzles.drums) {
+            PlayFromFile("drums-alone/drums-alone.mp3");
+        } else if (completedPuzzles.bass) {
+            PlayFromFile("bass-alone/bass-alone.mp3");
+        } else if (completedPuzzles.piano) {
+            PlayFromFile("piano-alone/piano-alone.mp3");
+        }
+    }
+
     function handleBack() {
         setOverlayVisible(false);
         // refresh completed puzzle flags immediately so homepage reflects changes
@@ -230,6 +271,7 @@ export default function Homepage() {
             setShowOverlay(false);
             setSelectedId(null);
         }, 350);
+        updateMusicOnBack();
     }
 
     function scrollToStage() {
@@ -240,6 +282,17 @@ export default function Homepage() {
 
     const selectedChar = CHARACTERS.find((c) => c.id === selectedId);
     const PuzzleComponent = selectedChar ? selectedChar.component : null;
+    const allHappy =
+        completedPuzzles &&
+        Object.values(completedPuzzles).every((v) => Boolean(v));
+
+    function handleRecommencer() {
+        try {
+            localStorage.clear();
+        } catch (e) {}
+        // reload to initial state
+        window.location.reload();
+    }
 
     return (
         <div className="hp">
@@ -247,22 +300,30 @@ export default function Homepage() {
                 <div className="hp-hero-bg" />
 
                 {introMounted && (
-                    <div
-                        className={
-                            "hp-intro-image" +
-                            (introVisible ? "" : " hp-intro-image--hidden")
-                        }
-                        onClick={handleIntroClick}
-                        role="button"
-                        aria-label="Intro image - click to continue"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") handleIntroClick();
-                        }}
-                        style={{
-                            backgroundImage: `url(${PUBLIC}/images/scene-ferme.png)`,
-                        }}
-                    />
+                    <>
+                        <div
+                            className={
+                                "hp-intro-image" +
+                                (introVisible ? "" : " hp-intro-image--hidden")
+                            }
+                            onClick={handleIntroClick}
+                            role="button"
+                            aria-label="Intro image - click to continue"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") handleIntroClick();
+                            }}
+                            style={{
+                                backgroundImage: `url(${PUBLIC}/images/scene-ferme.png)`,
+                            }}
+                        />
+
+                        <DialogBox
+                            message={"Bienvenue au spectacle des enfers ! Chut, le spectacle va commencer..."}
+                            visible={introVisible}
+                            position="bottom"
+                        />
+                    </>
                 )}
 
                 <div className="hp-hero-title-box">
@@ -275,14 +336,17 @@ export default function Homepage() {
                     </div>
                 </div>
 
-                <div className="hp-hero-lore-box">
-                    <p className="hp-hero-lore">
-                        Bienvenue chez les monstres, tu as été désigné pour
-                        aider le Quartet de l'Enfer à régler ses problèmes afin
-                        qu'ils puissent rejouer en harmonie tous ensemble. Aide
-                        chaque musicien à retrouver sa musique !
-                    </p>
-                </div>
+                {/* Show the hero lore as a dialog instead of subtitle */}
+                {!introMounted && (
+                    <DialogBox
+                        message={
+                            "Quel désastre ! Peux-tu aider le Quartet de l'Enfer à régler ses problèmes afin qu'ils puissent rejouer en harmonie tous ensemble ? Aide chaque musicien à retrouver sa musique!"
+                        }
+                        visible={heroDialogVisible && !showOverlay}
+                        onClose={() => setHeroDialogVisible(false)}
+                        position="bottom"
+                    />
+                )}
 
                 <div
                     className={
@@ -472,7 +536,10 @@ export default function Homepage() {
 
                     <div className="hp-overlay-content">
                         {PuzzleComponent ? (
-                            <PuzzleComponent onClose={handleBack} resetOnOpen={true} />
+                            <PuzzleComponent
+                                onClose={handleBack}
+                                resetOnOpen={true}
+                            />
                         ) : (
                             <div className="hp-coming-soon">
                                 <img
@@ -490,6 +557,21 @@ export default function Homepage() {
                                 </p>
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+            {allHappy && !showOverlay && (
+                <div className="hp-victory" role="status">
+                    <DialogBox
+                        message={"merci d'avoir aidé les monstres"}
+                        visible={true}
+                        autoCloseMs={0}
+                        position="bottom"
+                    />
+                    <div className="hp-victory-actions">
+                        <button className="hp-restart-btn" onClick={handleRecommencer}>
+                            recommencer
+                        </button>
                     </div>
                 </div>
             )}

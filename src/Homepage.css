@@ -470,6 +470,39 @@
     pointer-events: none;
 }
 
+/* Victory dialog shown when all monsters are happy */
+.hp-victory {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1200;
+    pointer-events: auto;
+    top: 77%;
+}
+
+.hp-victory-actions {
+    margin-top: 1rem;
+}
+
+.hp-restart-btn {
+    appearance: none;
+    border: 0;
+    padding: 0.6rem 1.05rem;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #ff6b6b, #c83232);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(200, 50, 50, 0.25);
+}
+
+.hp-restart-btn:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.14);
+    outline-offset: 4px;
+}
+
 .hp-overlay--visible {
     opacity: 1;
     transform: scale(1);

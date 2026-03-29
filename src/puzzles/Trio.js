@@ -114,7 +114,12 @@ export default function Trio({ onClose }) {
         try {
             localStorage.setItem("puzzle-trio-completed", "1");
         } catch (e) {}
-        showDialog("Merci ! Je suis heureux maintenant !", { avatar: `${PUBLIC}/images/cerbere_heureux.png` });
+        showDialog(
+            "Merci ! Nous pouvons différencier nos instruments maintenant.",
+            {
+                avatar: `${PUBLIC}/images/cerbere_heureux.png`,
+            },
+        );
     }
 
     useEffect(() => {
@@ -123,15 +128,24 @@ export default function Trio({ onClose }) {
 
         if (cerbereHappy) {
             // show completion dialog when opening from homepage and already completed
-            showDialog("Merci ! Je suis heureux maintenant !", { avatar: `${PUBLIC}/images/cerbere_heureux.png` });
+            showDialog(
+                "Merci ! Nous pouvons différencier nos instruments maintenant.",
+                {
+                    avatar: `${PUBLIC}/images/cerbere_heureux.png`,
+                },
+            );
             try {
-                target.addEventListener("pointerdown", hideOnFirst, { once: true });
+                target.addEventListener("pointerdown", hideOnFirst, {
+                    once: true,
+                });
             } catch (e) {
                 target.addEventListener("pointerdown", hideOnFirst);
             }
             return () => {
                 try {
-                    target.removeEventListener("pointerdown", hideOnFirst, { once: true });
+                    target.removeEventListener("pointerdown", hideOnFirst, {
+                        once: true,
+                    });
                 } catch (e) {
                     target.removeEventListener("pointerdown", hideOnFirst);
                 }
@@ -150,7 +164,9 @@ export default function Trio({ onClose }) {
         }
         return () => {
             try {
-                target.removeEventListener("pointerdown", hideOnFirst, { once: true });
+                target.removeEventListener("pointerdown", hideOnFirst, {
+                    once: true,
+                });
             } catch (e) {
                 target.removeEventListener("pointerdown", hideOnFirst);
             }
@@ -229,7 +245,9 @@ export default function Trio({ onClose }) {
         stopCurrent();
         resetButtons();
         // pick two instruments for level 3 and play them so targets match audio
-        const shuffled = [...INSTRUMENTS].sort(() => Math.random() - 0.5).slice(0, 2);
+        const shuffled = [...INSTRUMENTS]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 2);
         setL3Targets(shuffled);
         setL3Found([]);
         setL3Done(false);
@@ -342,7 +360,8 @@ export default function Trio({ onClose }) {
     const isComplete = step === "complete";
 
     const instructions = {
-        explore: "Clique sur chaque tête pour entendre l'instrument qui est joué.",
+        explore:
+            "Clique sur chaque tête pour entendre l'instrument qui est joué.",
         level1: `Tour ${l1Round + 1} sur ${INSTRUMENTS.length}  Un instrument est en train de jouer. Clique sur la bonne tête.`,
         level2: "Deux instruments sont en train de jouer. Trouve-les tous les deux.",
         level3: "Deux instruments sont en train de jouer. Trouve-les tous les deux.",
@@ -399,12 +418,12 @@ export default function Trio({ onClose }) {
                     ZONES.map((zone) => (
                         <button
                             key={zone.id}
-                                        className={[
-                                            "trio-zone",
-                                            SHOW_ZONES ? "trio-zone--visible" : "",
-                                        ]
-                                            .filter(Boolean)
-                                            .join(" ")}
+                            className={[
+                                "trio-zone",
+                                SHOW_ZONES ? "trio-zone--visible" : "",
+                            ]
+                                .filter(Boolean)
+                                .join(" ")}
                             style={{
                                 left: zone.left,
                                 top: zone.top,
