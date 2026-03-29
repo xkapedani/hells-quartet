@@ -28,6 +28,7 @@ export async function PlayFromFile(musicName) {
     }).toDestination();
 
     currentPlayer = player;
+    console.log("Playing", musicName);
 
     return player;
 }

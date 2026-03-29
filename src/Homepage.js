@@ -94,8 +94,7 @@ export default function Homepage() {
 
     useEffect(() => {
         try {
-            const drums =
-                localStorage.getItem("puzzle-drums-completed") === "1";
+            const drums = localStorage.getItem("puzzle-drums-completed") === "1";
             const bass = localStorage.getItem("puzzle-bass-completed") === "1";
             const trio = localStorage.getItem("puzzle-trio-completed") === "1";
             const piano =
@@ -223,6 +222,10 @@ export default function Homepage() {
         };
     }, []);
 
+    useEffect(() => {
+        updateMusicOnBack();
+    }, [completedPuzzles]);
+
     function handleIntroClick() {
         PlayFromFile("awful-title-screen/awful-all.mp3");
         setIntroVisible(false);
@@ -243,7 +246,7 @@ export default function Homepage() {
     function updateMusicOnBack() {
         // Play corresponding happy music following which puzzle was completed
         if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile("quartet-complete/quartet-complete.mp3");
+            PlayFromFile("final-song.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass) {
             PlayFromFile("trio-drums-bass.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.piano) {
@@ -259,28 +262,27 @@ export default function Homepage() {
         } else if (completedPuzzles.trio && completedPuzzles.piano) {
             PlayFromFile("trio-piano.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.bass) {
-            PlayFromFile("drums-bass/drums-bass.mp3");
+            PlayFromFile("bass-drums.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.piano) {
-            PlayFromFile("drums-piano/drums-piano.mp3");
+            PlayFromFile("drums-piano.mp3");
         } else if (completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile("bass-piano/bass-piano.mp3");
+            PlayFromFile("piano-bass.mp3");
         } else if (completedPuzzles.trio) {
-            PlayFromFile("trio-alone/trio-alone.mp3");
+            PlayFromFile("trio.mp3");
         } else if (completedPuzzles.drums) {
-            PlayFromFile("drums-alone/drums-alone.mp3");
+            PlayFromFile("drums.mp3");
         } else if (completedPuzzles.bass) {
-            PlayFromFile("bass-alone/bass-alone.mp3");
+            PlayFromFile("bass.mp3");
         } else if (completedPuzzles.piano) {
-            PlayFromFile("piano-alone/piano-alone.mp3");
+            PlayFromFile("piano.mp3");
         }
-    }
+    } 
 
     function handleBack() {
         setOverlayVisible(false);
         // refresh completed puzzle flags immediately so homepage reflects changes
         try {
-            const drums =
-                localStorage.getItem("puzzle-drums-completed") === "1";
+            const drums = localStorage.getItem("puzzle-drums-completed") === "1";
             const bass = localStorage.getItem("puzzle-bass-completed") === "1";
             const trio = localStorage.getItem("puzzle-trio-completed") === "1";
             const piano =
@@ -298,7 +300,6 @@ export default function Homepage() {
             setShowOverlay(false);
             setSelectedId(null);
         }, 350);
-        updateMusicOnBack();
     }
 
     function scrollToStage() {
