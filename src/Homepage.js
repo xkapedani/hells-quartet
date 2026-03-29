@@ -246,6 +246,17 @@ export default function Homepage() {
 
     const selectedChar = CHARACTERS.find((c) => c.id === selectedId);
     const PuzzleComponent = selectedChar ? selectedChar.component : null;
+    const allHappy =
+        completedPuzzles &&
+        Object.values(completedPuzzles).every((v) => Boolean(v));
+
+    function handleRecommencer() {
+        try {
+            localStorage.clear();
+        } catch (e) {}
+        // reload to initial state
+        window.location.reload();
+    }
 
     return (
         <div className="hp">
@@ -507,6 +518,21 @@ export default function Homepage() {
                                 </p>
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+            {allHappy && !showOverlay && (
+                <div className="hp-victory" role="status">
+                    <DialogBox
+                        message={"merci d'avoir aidé les monstres"}
+                        visible={true}
+                        autoCloseMs={0}
+                        position="bottom"
+                    />
+                    <div className="hp-victory-actions">
+                        <button className="hp-restart-btn" onClick={handleRecommencer}>
+                            recommencer
+                        </button>
                     </div>
                 </div>
             )}
