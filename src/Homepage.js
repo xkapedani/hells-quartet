@@ -375,7 +375,7 @@ export default function Homepage() {
                             >
                                 <polyline points="15 18 9 12 15 6" />
                             </svg>
-                            <span>Back</span>
+                            <span>Retour</span>
                         </button>
 
                         <div className="hp-overlay-bar-info">
