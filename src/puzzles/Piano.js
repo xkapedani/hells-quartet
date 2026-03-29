@@ -81,7 +81,7 @@ export default function Piano() {
         if (!pianoCompleted) return;
         // when completed, show end dialog if not already visible (covers reload case)
         const avatar = `${PUBLIC}/images/mille_pattes_heureux.png`;
-        showDialog("Magnifique ! Millody est désormais heureuse. Clique pour revenir à l'accueil.", { avatar });
+        showDialog("Magnifique ! Millody est désormais heureuse.", { avatar });
         // on next pointerdown, navigate back to homepage
         const handler = () => {
             setDialogVisible(false);

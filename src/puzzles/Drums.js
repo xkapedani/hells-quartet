@@ -155,8 +155,6 @@ function Drums({ onClose }) {
         return { x, y };
     }
 
-    
-
     async function playPattern(startDelay = 2000) {
         if (!pattern || pattern.length === 0) return;
         setPlaying(true);
@@ -192,7 +190,6 @@ function Drums({ onClose }) {
         playingTimeoutsRef.current.push(clearId);
     }
 
-    // play a given pattern array immediately (does not rely on state pattern)
     // play a given pattern array immediately (does not rely on state pattern)
     function playPatternWith(pat, startDelay = 2000) {
         if (!pat || pat.length === 0) return;
