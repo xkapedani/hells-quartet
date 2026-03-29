@@ -73,6 +73,7 @@ export default function Homepage() {
     const [completedPuzzles, setCompletedPuzzles] = useState({
         drums: false,
         bass: false,
+        trio: false,
     });
 
     useEffect(() => {
@@ -80,9 +81,10 @@ export default function Homepage() {
             const drums =
                 localStorage.getItem("puzzle-drums-completed") === "1";
             const bass = localStorage.getItem("puzzle-bass-completed") === "1";
-            setCompletedPuzzles({ drums, bass });
+            const trio = localStorage.getItem("puzzle-trio-completed") === "1";
+            setCompletedPuzzles({ drums, bass, trio });
         } catch (e) {
-            setCompletedPuzzles({ drums: false, bass: false });
+            setCompletedPuzzles({ drums: false, bass: false, trio: false });
         }
     }, []);
 
@@ -186,9 +188,10 @@ export default function Homepage() {
             const drums =
                 localStorage.getItem("puzzle-drums-completed") === "1";
             const bass = localStorage.getItem("puzzle-bass-completed") === "1";
-            setCompletedPuzzles({ drums, bass });
+            const trio = localStorage.getItem("puzzle-trio-completed") === "1";
+            setCompletedPuzzles({ drums, bass, trio });
         } catch (e) {
-            setCompletedPuzzles({ drums: false, bass: false });
+            setCompletedPuzzles({ drums: false, bass: false, trio: false });
         }
         setTimeout(() => {
             setShowOverlay(false);
@@ -270,15 +273,16 @@ export default function Homepage() {
                         onMouseLeave={() => setHoveredId(null)}
                         aria-label={char.name}
                     >
-                        <img
-                            src={
-                                char.id === "pieuvre" && completedPuzzles.drums
-                                    ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
-                                    : char.id === "gnomes" &&
-                                        completedPuzzles.bass
-                                      ? `${PUBLIC}/images/gnomes_heureux.png`
-                                      : `${PUBLIC}${char.image}`
-                            }
+                                        <img
+                                            src={
+                                                char.id === "cerbere" && completedPuzzles.trio
+                                                    ? `${PUBLIC}/images/cerbere_heureux.png`
+                                                    : char.id === "pieuvre" && completedPuzzles.drums
+                                                    ? `${PUBLIC}/images/pieuvre_heureuse_2.png`
+                                                    : char.id === "gnomes" && completedPuzzles.bass
+                                                    ? `${PUBLIC}/images/gnomes_heureux.png`
+                                                    : `${PUBLIC}${char.image}`
+                                            }
                             alt={char.name}
                             className="hp-char-img"
                             draggable={false}

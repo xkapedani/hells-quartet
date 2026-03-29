@@ -22,7 +22,7 @@ const STRINGS = [
 /* ── Tuning constants ──────────────────────────────────────────────────────── */
 
 const RANGE_HZ = 35; // slider covers [target-35 … target+35]
-const TUNE_TOLERANCE_HZ = 0.5; // must land within 0.5 Hz to count as tuned
+const TUNE_TOLERANCE_HZ = 3; // must land within 3 Hz to count as tuned
 const MIN_OFFSET = 18; // start at least this far from target
 const MAX_OFFSET = RANGE_HZ - 2;
 

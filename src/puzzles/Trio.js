@@ -45,7 +45,7 @@ function getInstrument(id) {
     return INSTRUMENTS.find((i) => i.id === id);
 }
 
-export default function Trio() {
+export default function Trio({ onClose }) {
     const [step, setStep] = useState("explore");
     const [feedback, setFeedback] = useState({ icon: "", type: "neutral" });
     const [playingId, setPlayingId] = useState(null);
@@ -77,6 +77,13 @@ export default function Trio() {
     const [dialogVisible, setDialogVisible] = useState(false);
     const [dialogMessage, setDialogMessage] = useState("");
     const [dialogAvatar, setDialogAvatar] = useState(null);
+    const [cerbereHappy, setCerbereHappy] = useState(() => {
+        try {
+            return localStorage.getItem("puzzle-trio-completed") === "1";
+        } catch (e) {
+            return false;
+        }
+    });
 
     function clearButtonTimers() {
         buttonTimers.current.forEach(clearTimeout);
@@ -99,6 +106,15 @@ export default function Trio() {
         setDialogMessage(msg);
         setDialogAvatar(opts.avatar || null);
         setDialogVisible(true);
+    }
+
+    function finishTrio() {
+        // mark completed, show thank-you dialog and switch image
+        setCerbereHappy(true);
+        try {
+            localStorage.setItem("puzzle-trio-completed", "1");
+        } catch (e) {}
+        showDialog("Merci ! Je suis heureux maintenant !", { avatar: `${PUBLIC}/images/cerbere_heureux.png` });
     }
 
     useEffect(() => {
@@ -329,7 +345,10 @@ export default function Trio() {
             <DialogBox
                 message={dialogMessage}
                 visible={dialogVisible}
-                onClose={() => setDialogVisible(false)}
+                onClose={() => {
+                    setDialogVisible(false);
+                    if (typeof onClose === "function") onClose();
+                }}
                 avatar={dialogAvatar}
                 name={"Cerb'air"}
                 autoCloseMs={0}
@@ -348,7 +367,11 @@ export default function Trio() {
 
             <div className="trio-image-wrap">
                 <img
-                    src={`${PUBLIC}/images/cerbere_triste.png`}
+                    src={
+                        cerbereHappy
+                            ? `${PUBLIC}/images/cerbere_heureux.png`
+                            : `${PUBLIC}/images/cerbere_triste.png`
+                    }
                     alt="Cerberus playing instruments"
                     className="trio-image"
                     draggable={false}
@@ -427,6 +450,7 @@ export default function Trio() {
                         onClick={() => {
                             cancelSequence();
                             setStep("complete");
+                            finishTrio();
                         }}
                     >
                         Terminer
