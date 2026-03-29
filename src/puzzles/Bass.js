@@ -280,6 +280,27 @@ export default function Bass() {
         };
     }
 
+    /* ── get from localStorage ───────────────────────────────────────────────────── */
+    
+    useEffect(() => {
+        // set initial pattern from first example, or restore completion from localStorage
+        try {
+            const done = localStorage.getItem("puzzle-bass-completed");
+            if (done === "1") {
+                // setPieuvreHappy(true);
+                // setCompletedExamples([true, true, true]);
+                // setCurrentExampleIndex(null);
+                // setMessage("Le puzzle est déjà terminé.");
+                setGnomesHappy(true);
+                setTunedArr(STRINGS.map(() => true));
+                setPlayerHzArr(STRINGS.map((s) => s.targetHz));
+            } else {
+            }
+        } catch (e) {
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     /* ── Tone.js setup ───────────────────────────────────────────────────── */
 
     useEffect(() => {
