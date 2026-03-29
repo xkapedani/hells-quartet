@@ -200,31 +200,42 @@ export default function Piano() {
     }
 
     return (
-        <div ref={containerRef} className="piano-grid" style={{ backgroundImage: `url(${PUBLIC}/images/scene.png)` }}>
-            <Particles ref={particlesRef} publicPath={PUBLIC} />
-            <DialogBox
-                message={dialogMessage}
-                visible={dialogVisible}
-                onClose={() => setDialogVisible(false)}
-                autoCloseMs={0}
-                avatar={dialogAvatar}
-                position="bottom"
-            />
-            <div className="piano-left">
-                <img
-                    src={
-                        pianoCompleted
-                            ? `${PUBLIC}/images/mille_pattes_heureux.png`
-                            : `${PUBLIC}/images/mille_pattes_fache.png`
-                    }
-                    alt="piano"
-                    className="piano-image"
-                    ref={imageRef}
-                    onClick={handleImageClick}
-                    role="button"
-                    draggable={false}
+        <div className="piano-page">
+            <div ref={containerRef} className="piano-grid" style={{ backgroundImage: `
+                linear-gradient(
+                    180deg,
+                    rgba(4, 2, 8, 0.72) 0%,
+                    rgba(10, 5, 16, 0.65) 50%,
+                    rgba(4, 2, 8, 0.8) 100%
+                ), url(${PUBLIC}/images/scene.png)` }}>
+                <Particles ref={particlesRef} publicPath={PUBLIC} />
+                <DialogBox
+                    message={dialogMessage}
+                    visible={dialogVisible}
+                    onClose={() => setDialogVisible(false)}
+                    autoCloseMs={0}
+                    avatar={dialogAvatar}
+                    position="bottom"
                 />
-            </div>
+                <div className="piano-grid-header">
+                    <h1 className="piano-title">Retrouve la note</h1>
+                    <p className="piano-subtitle">Écoute la note et replace-la</p>
+                </div>
+                <div className="piano-left">
+                    <img
+                        src={
+                            pianoCompleted
+                                ? `${PUBLIC}/images/mille_pattes_heureux.png`
+                                : `${PUBLIC}/images/mille_pattes_fache.png`
+                        }
+                        alt="piano"
+                        className="piano-image"
+                        ref={imageRef}
+                        onClick={handleImageClick}
+                        role="button"
+                        draggable={false}
+                    />
+                </div>
 
             <div className="piano-right">
                 <div className="piano-stars" aria-hidden>
@@ -267,6 +278,7 @@ export default function Piano() {
                     ))}
                 </div>
             </div>
+        </div>
         </div>
     );
 }
