@@ -63,7 +63,10 @@ export default function Piano() {
     useEffect(() => {
         // show intro dialog once on mount
         const avatar = `${PUBLIC}/images/mille_pattes_fache.png`;
-        showDialog("Bonjour ! Clique sur Millody pour entendre la note, puis glisse-la sur la portée.", { avatar });
+        showDialog(
+            "Bonjour... Clique sur moi pour entendre la note, puis glisse-la sur la portée.",
+            { avatar },
+        );
         const target = document;
         const hide = () => setDialogVisible(false);
         try {
@@ -100,7 +103,9 @@ export default function Piano() {
         }
         return () => {
             try {
-                document.removeEventListener("pointerdown", handler, { once: true });
+                document.removeEventListener("pointerdown", handler, {
+                    once: true,
+                });
             } catch (e) {
                 document.removeEventListener("pointerdown", handler);
             }
@@ -156,9 +161,9 @@ export default function Piano() {
             if (particlesRef.current) {
                 particlesRef.current.spawnBurst(pos.x, pos.y, 10, {
                     src: `${PUBLIC}/images/heart.png`,
-                    radius: 200, 
-                    size: 48, 
-                    lifetime: 6000 
+                    radius: 200,
+                    size: 48,
+                    lifetime: 6000,
                 });
             }
             setDroppedCorrect(true);
@@ -200,7 +205,11 @@ export default function Piano() {
     }
 
     return (
-        <div ref={containerRef} className="piano-grid" style={{ backgroundImage: `url(${PUBLIC}/images/scene.png)` }}>
+        <div
+            ref={containerRef}
+            className="piano-grid"
+            style={{ backgroundImage: `url(${PUBLIC}/images/scene.png)` }}
+        >
             <Particles ref={particlesRef} publicPath={PUBLIC} />
             <DialogBox
                 message={dialogMessage}
@@ -236,7 +245,11 @@ export default function Piano() {
                                     ? `${PUBLIC}/images/star-full.png`
                                     : `${PUBLIC}/images/star-empty.png`
                             }
-                            alt={i < stars ? `Star ${i + 1} full` : `Star ${i + 1} empty`}
+                            alt={
+                                i < stars
+                                    ? `Star ${i + 1} full`
+                                    : `Star ${i + 1} empty`
+                            }
                         />
                     ))}
                 </div>
@@ -249,22 +262,31 @@ export default function Piano() {
                     >
                         {target.label}
                     </div>
-                    {droppedCorrect && <div className="note-correct">✓ Bon</div>}
+                    {droppedCorrect && (
+                        <div className="note-correct">✓ Bon</div>
+                    )}
                 </div>
 
                 <div className="staff">
                     {/* render zones for NOTES vertical positions (top = highest note) */}
-                    {NOTES.slice().reverse().map((n) => (
-                        <div
-                            key={n.name}
-                            className={"staff-zone" + (droppedCorrect && n.name === target.name ? " staff-zone--correct" : "")}
-                            onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => handleDrop(e, n.name)}
-                            onDragEnter={() => handleZoneEnter(n.name)}
-                        >
-                            <div className="staff-line" />
-                        </div>
-                    ))}
+                    {NOTES.slice()
+                        .reverse()
+                        .map((n) => (
+                            <div
+                                key={n.name}
+                                className={
+                                    "staff-zone" +
+                                    (droppedCorrect && n.name === target.name
+                                        ? " staff-zone--correct"
+                                        : "")
+                                }
+                                onDragOver={(e) => e.preventDefault()}
+                                onDrop={(e) => handleDrop(e, n.name)}
+                                onDragEnter={() => handleZoneEnter(n.name)}
+                            >
+                                <div className="staff-line" />
+                            </div>
+                        ))}
                 </div>
             </div>
         </div>
