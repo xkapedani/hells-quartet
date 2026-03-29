@@ -253,8 +253,8 @@ export default function Piano() {
                 </div>
 
                 <div className="staff">
-                    {/* render zones for NOTES vertical positions */}
-                    {NOTES.map((n) => (
+                    {/* render zones for NOTES vertical positions (top = highest note) */}
+                    {NOTES.slice().reverse().map((n) => (
                         <div
                             key={n.name}
                             className={"staff-zone" + (droppedCorrect && n.name === target.name ? " staff-zone--correct" : "")}
