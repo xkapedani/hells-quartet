@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as Tone from "tone";
 import "./Piano.css";
 import DialogBox from "../components/DialogBox";
+import Particles from "./Particles";
 import { useNavigate } from "react-router-dom";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
@@ -39,6 +40,9 @@ export default function Piano() {
         }
     });
     const navigate = useNavigate();
+    const containerRef = useRef(null);
+    const imageRef = useRef(null);
+    const particlesRef = useRef(null);
 
     useEffect(() => {
         const s = new Tone.Synth({
@@ -147,6 +151,16 @@ export default function Piano() {
         e.preventDefault();
         const dragged = e.dataTransfer.getData("text/plain");
         if (dragged === zoneNote) {
+            // happy particles at the image position
+            const pos = getRelativeCenter(imageRef);
+            if (particlesRef.current) {
+                particlesRef.current.spawnBurst(pos.x, pos.y, 10, {
+                    src: `${PUBLIC}/images/heart.png`,
+                    radius: 200, 
+                    size: 48, 
+                    lifetime: 6000 
+                });
+            }
             setDroppedCorrect(true);
             setStars((prev) => {
                 if (prev >= 5) return prev;
@@ -173,8 +187,21 @@ export default function Piano() {
         }
     };
 
+    function getRelativeCenter(ref) {
+        const container = containerRef.current;
+        const el = ref && ref.current;
+        if (!container || !el) return { x: 0, y: 0 };
+        const crect = container.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
+        return {
+            x: rect.left - crect.left + rect.width / 2,
+            y: rect.top - crect.top + rect.height / 2,
+        };
+    }
+
     return (
-        <div className="piano-grid" style={{ backgroundImage: `url(${PUBLIC}/images/scene.png)` }}>
+        <div ref={containerRef} className="piano-grid" style={{ backgroundImage: `url(${PUBLIC}/images/scene.png)` }}>
+            <Particles ref={particlesRef} publicPath={PUBLIC} />
             <DialogBox
                 message={dialogMessage}
                 visible={dialogVisible}
@@ -192,6 +219,7 @@ export default function Piano() {
                     }
                     alt="piano"
                     className="piano-image"
+                    ref={imageRef}
                     onClick={handleImageClick}
                     role="button"
                     draggable={false}
