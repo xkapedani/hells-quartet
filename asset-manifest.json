@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/hells-quartet/static/css/main.9ecf3df3.css",
-    "main.js": "/hells-quartet/static/js/main.e91bf825.js",
+    "main.css": "/hells-quartet/static/css/main.1e757726.css",
+    "main.js": "/hells-quartet/static/js/main.742a0ba4.js",
     "static/js/453.b2c65378.chunk.js": "/hells-quartet/static/js/453.b2c65378.chunk.js",
     "static/media/scene.png": "/hells-quartet/static/media/scene.b26e03044f545a1bb6b4.png",
     "index.html": "/hells-quartet/index.html",
-    "main.9ecf3df3.css.map": "/hells-quartet/static/css/main.9ecf3df3.css.map",
-    "main.e91bf825.js.map": "/hells-quartet/static/js/main.e91bf825.js.map",
+    "main.1e757726.css.map": "/hells-quartet/static/css/main.1e757726.css.map",
+    "main.742a0ba4.js.map": "/hells-quartet/static/js/main.742a0ba4.js.map",
     "453.b2c65378.chunk.js.map": "/hells-quartet/static/js/453.b2c65378.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9ecf3df3.css",
-    "static/js/main.e91bf825.js"
+    "static/css/main.1e757726.css",
+    "static/js/main.742a0ba4.js"
   ]
 }
