@@ -109,6 +109,16 @@ export default function Homepage() {
         if (!introMounted) setHeroDialogVisible(true);
     }, [introMounted]);
 
+    // Keep hero dialog open until the user clicks (mousedown) anywhere.
+    useEffect(() => {
+        if (!heroDialogVisible) return undefined;
+        function onDown() {
+            setHeroDialogVisible(false);
+        }
+        window.addEventListener("mousedown", onDown, { once: true });
+        return () => window.removeEventListener("mousedown", onDown);
+    }, [heroDialogVisible]);
+
     useEffect(() => {
         function onScroll() {
             if (!stageRef.current) return;
@@ -366,6 +376,7 @@ export default function Homepage() {
                         }
                         visible={heroDialogVisible && !showOverlay}
                         onClose={() => setHeroDialogVisible(false)}
+                        autoCloseMs={0}
                         position="bottom"
                     />
                 )}
