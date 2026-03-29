@@ -483,7 +483,11 @@
 }
 
 .hp-victory-actions {
-    margin-top: 1rem;
+    position: fixed;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    z-index: 950;
+    margin: 0;
 }
 
 .hp-restart-btn {

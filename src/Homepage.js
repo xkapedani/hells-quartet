@@ -85,6 +85,11 @@ export default function Homepage() {
         trio: false,
         piano: false,
     });
+    const [thankedShown, setThankedShown] = useState(false);
+    const [showThanksDialog, setShowThanksDialog] = useState(false);
+    const allHappy =
+        completedPuzzles &&
+        Object.values(completedPuzzles).every((v) => Boolean(v));
 
     useEffect(() => {
         try {
@@ -94,7 +99,9 @@ export default function Homepage() {
             const trio = localStorage.getItem("puzzle-trio-completed") === "1";
             const piano =
                 localStorage.getItem("puzzle-piano-completed") === "1";
+            const thanks = localStorage.getItem("puzzle-thanks-shown") === "1";
             setCompletedPuzzles({ drums, bass, trio, piano });
+            setThankedShown(Boolean(thanks));
         } catch (e) {
             setCompletedPuzzles({
                 drums: false,
@@ -106,18 +113,18 @@ export default function Homepage() {
     }, []);
 
     useEffect(() => {
+        if (allHappy && !showOverlay && !thankedShown) {
+            setShowThanksDialog(true);
+            try {
+                localStorage.setItem("puzzle-thanks-shown", "1");
+            } catch (e) {}
+            setThankedShown(true);
+        }
+    }, [allHappy, showOverlay, thankedShown]);
+
+    useEffect(() => {
         if (!introMounted) setHeroDialogVisible(true);
     }, [introMounted]);
-
-    // Keep hero dialog open until the user clicks (mousedown) anywhere.
-    useEffect(() => {
-        if (!heroDialogVisible) return undefined;
-        function onDown() {
-            setHeroDialogVisible(false);
-        }
-        window.addEventListener("mousedown", onDown, { once: true });
-        return () => window.removeEventListener("mousedown", onDown);
-    }, [heroDialogVisible]);
 
     useEffect(() => {
         function onScroll() {
@@ -224,38 +231,37 @@ export default function Homepage() {
     }
 
     function updateMusicOnBack() {
-        
         // Play corresponding happy music following which puzzle was completed
         if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile("final-song.mp3");
+            PlayFromFile("quartet-complete/quartet-complete.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.bass) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-complete/trio-complete.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums && completedPuzzles.piano) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-complete/trio-complete.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-complete/trio-complete.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile(".mp3");
+            PlayFromFile("drums-bass-piano/drums-bass-piano.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.drums) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-drums/trio-drums.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.bass) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-bass/trio-bass.mp3");
         } else if (completedPuzzles.trio && completedPuzzles.piano) {
-            PlayFromFile(".mp3");
+            PlayFromFile("trio-piano/trio-piano.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.bass) {
-            PlayFromFile("bass-drums.mp3");
+            PlayFromFile("drums-bass/drums-bass.mp3");
         } else if (completedPuzzles.drums && completedPuzzles.piano) {
-            PlayFromFile("drums-piano.mp3");
+            PlayFromFile("drums-piano/drums-piano.mp3");
         } else if (completedPuzzles.bass && completedPuzzles.piano) {
-            PlayFromFile("piano-bass.mp3");
+            PlayFromFile("bass-piano/bass-piano.mp3");
         } else if (completedPuzzles.trio) {
-            PlayFromFile("trio.mp3");
+            PlayFromFile("trio-alone/trio-alone.mp3");
         } else if (completedPuzzles.drums) {
-            PlayFromFile("drums.mp3");
+            PlayFromFile("drums-alone/drums-alone.mp3");
         } else if (completedPuzzles.bass) {
-            PlayFromFile("bass.mp3");
+            PlayFromFile("bass-alone/bass-alone.mp3");
         } else if (completedPuzzles.piano) {
-            PlayFromFile("piano.mp3");
+            PlayFromFile("piano-alone/piano-alone.mp3");
         }
     }
 
@@ -293,31 +299,6 @@ export default function Homepage() {
 
     const selectedChar = CHARACTERS.find((c) => c.id === selectedId);
     const PuzzleComponent = selectedChar ? selectedChar.component : null;
-    const [thankYouSeen, setThankYouSeen] = useState(false);
-    const [showThankYou, setShowThankYou] = useState(false);
-
-    useEffect(() => {
-        try {
-            if (localStorage.getItem("thank-you-shown") === "1") {
-                setThankYouSeen(true);
-            }
-        } catch (e) {}
-    }, []);
-
-    const allHappy =
-        completedPuzzles &&
-        Object.values(completedPuzzles).every((v) => Boolean(v));
-
-    useEffect(() => {
-        if (allHappy && !thankYouSeen) {
-            // show the thank-you dialog once and persist that we've shown it
-            setShowThankYou(true);
-            setThankYouSeen(true);
-            try {
-                localStorage.setItem("thank-you-shown", "1");
-            } catch (e) {}
-        }
-    }, [allHappy, thankYouSeen]);
 
     function handleRecommencer() {
         try {
@@ -377,7 +358,6 @@ export default function Homepage() {
                         }
                         visible={heroDialogVisible && !showOverlay}
                         onClose={() => setHeroDialogVisible(false)}
-                        autoCloseMs={0}
                         position="bottom"
                     />
                 )}
@@ -570,10 +550,7 @@ export default function Homepage() {
 
                     <div className="hp-overlay-content">
                         {PuzzleComponent ? (
-                            <PuzzleComponent
-                                onClose={handleBack}
-                                resetOnOpen={true}
-                            />
+                            <PuzzleComponent onClose={handleBack} resetOnOpen={true} />
                         ) : (
                             <div className="hp-coming-soon">
                                 <img
@@ -594,20 +571,23 @@ export default function Homepage() {
                     </div>
                 </div>
             )}
-            {!showOverlay && (
-                    <div className="hp-victory" role="status">
-                        <DialogBox
-                            message={"Merci d'avoir aidé les monstres ! Tu peux recommencer une partie pour rejouer les puzzles et la musique autant de fois que tu veux !"}
-                            visible={showThankYou}
-                            onClose={() => setShowThankYou(false)}
-                        autoCloseMs={0}
-                        position="bottom"
-                    />
-                    <div className="hp-victory-actions">
-                        <button className="hp-restart-btn" onClick={handleRecommencer}>
-                            recommencer
-                        </button>
-                    </div>
+            {/* Thank-you dialog: show only once (persisted) */}
+            {showThanksDialog && (
+                <DialogBox
+                    message={"merci d'avoir aidé les monstres"}
+                    visible={true}
+                    autoCloseMs={4500}
+                    onClose={() => setShowThanksDialog(false)}
+                    position="bottom"
+                />
+            )}
+
+            {/* Restart button: visible whenever all monsters are happy and the scene is open on homepage */}
+            {allHappy && !showOverlay && (
+                <div className="hp-victory-actions" aria-hidden={false}>
+                    <button className="hp-restart-btn" onClick={handleRecommencer}>
+                        recommencer
+                    </button>
                 </div>
             )}
         </div>
