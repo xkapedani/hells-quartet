@@ -1,0 +1,105 @@
+/* Two-column grid for piano mini-game */
+.piano-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 24px;
+  background-size: cover;
+  background-position: center;
+  min-height: 520px;
+  color: #222;
+}
+
+.piano-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.piano-title {
+  margin: 8px 0 12px 0;
+}
+
+.piano-image {
+  max-width: 90%;
+  height: auto;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  border-radius: 6px;
+}
+
+.piano-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.piano-instruction {
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.note-pick-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.draggable-note {
+  background: #222;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  user-select: none;
+}
+
+.note-correct {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.staff {
+  width: 100%;
+  max-width: 480px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.85);
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.staff-zone {
+  height: 26px;
+  position: relative;
+}
+
+.staff-line {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 2px;
+  background: #222;
+  transform: translateY(-50%);
+  opacity: 0.85;
+}
+
+.staff-zone--correct .staff-line {
+  background: #2e7d32;
+}
+
+.drag-note-dragghost {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  padding: 6px 8px;
+  background: #222;
+  color: #fff;
+  border-radius: 6px;
+}
+
+@media (max-width: 720px) {
+  .piano-grid { grid-template-columns: 1fr; }
+}
