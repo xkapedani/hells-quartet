@@ -68,6 +68,7 @@ export default function Homepage() {
     const [introMounted, setIntroMounted] = useState(true);
     const [introVisible, setIntroVisible] = useState(true);
     const [heroDialogVisible, setHeroDialogVisible] = useState(false);
+    const [heroShown, setHeroShown] = useState(false);
 
     const [arrowsVisible, setArrowsVisible] = useState(true);
     const stageRef = useRef(null);
@@ -100,8 +101,10 @@ export default function Homepage() {
             const piano =
                 localStorage.getItem("puzzle-piano-completed") === "1";
             const thanks = localStorage.getItem("puzzle-thanks-shown") === "1";
+            const hero = localStorage.getItem("hero-lore-shown") === "1";
             setCompletedPuzzles({ drums, bass, trio, piano });
             setThankedShown(Boolean(thanks));
+            setHeroShown(Boolean(hero));
         } catch (e) {
             setCompletedPuzzles({
                 drums: false,
@@ -123,8 +126,14 @@ export default function Homepage() {
     }, [allHappy, showOverlay, thankedShown]);
 
     useEffect(() => {
-        if (!introMounted) setHeroDialogVisible(true);
-    }, [introMounted]);
+        if (!introMounted && !heroShown) {
+            setHeroDialogVisible(true);
+            try {
+                localStorage.setItem("hero-lore-shown", "1");
+            } catch (e) {}
+            setHeroShown(true);
+        }
+    }, [introMounted, heroShown]);
 
     useEffect(() => {
         function onScroll() {
