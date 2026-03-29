@@ -51,9 +51,10 @@ function Drums({ onClose, resetOnOpen = false }) {
         // when `resetOnOpen` is true.
         try {
             if (resetOnOpen) {
-                // keep the octopus visually happy but reset progression so the
-                // player can replay the puzzle with the happy octopus
-                setPieuvreHappy(true);
+                // reset progression when opened from the homepage overlay.
+                // show the octopus in the default (not-happy) state so the
+                // player can replay the puzzle normally.
+                setPieuvreHappy(false);
                 setCompletedExamples([false, false, false]);
                 setPattern(examples[0]);
                 setCurrentExampleIndex(0);
