@@ -192,7 +192,7 @@ export default function Homepage() {
     }, []);
 
     function handleIntroClick() {
-        PlayFromFile("gnomes-Bass.mp3");
+        PlayFromFile("awful-title-screen/awful-all.mp3");
         setIntroVisible(false);
         // remove from DOM after transition
         introTimeoutRef.current = setTimeout(() => setIntroMounted(false), 600);
