@@ -92,7 +92,6 @@ export default function Piano() {
     return (
         <div className="piano-grid" style={{ backgroundImage: `url(${PUBLIC}/images/scene.png)` }}>
             <div className="piano-left">
-                <h1 className="piano-title">Retrouve la note</h1>
                 <img
                     src={`${PUBLIC}/images/mille_pattes_fache.png`}
                     alt="piano"
@@ -104,8 +103,6 @@ export default function Piano() {
             </div>
 
             <div className="piano-right">
-                <div className="piano-instruction">Glisse la note sur la bonne place du portee</div>
-
                 <div className="note-pick-area">
                     <div
                         className="draggable-note"
