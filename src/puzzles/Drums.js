@@ -419,7 +419,7 @@ function Drums({ onClose }) {
             >
                 <h1 className="trio-title">Joue en rythme</h1>
                 <p className="">
-                    {"Aide-le à retrouver le rythme, Ecoute le rythme joué et reproduis le."}
+                    {"Aide-le à retrouver le rythme, écoute le rythme joué et reproduis le."}
                 </p>
             </div>
             <div style={{ marginTop: 8, textAlign: "center" }}>
