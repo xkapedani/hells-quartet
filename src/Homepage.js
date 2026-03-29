@@ -352,7 +352,7 @@ export default function Homepage() {
                         />
 
                         <DialogBox
-                            message={"Bienvenue au spectacle des enfers ! Chut, le spectacle va commencer..."}
+                            message={"Bienvenue au spectacle ! Chut, le spectacle va commencer..."}
                             visible={introVisible}
                             position="bottom"
                         />
