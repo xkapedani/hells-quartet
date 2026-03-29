@@ -178,7 +178,7 @@ export default function Piano() {
                     // show end dialog
                     const avatar = `${PUBLIC}/images/mille_pattes_heureux.png`;
                     setDialogAvatar(avatar);
-                    setDialogMessage("Bravo ! Millody est heureuse 🎉");
+                    setDialogMessage("Bravo ! Millody est heureuse");
                     setDialogVisible(true);
                 }
                 return next;
