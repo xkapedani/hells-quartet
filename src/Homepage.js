@@ -593,7 +593,7 @@ export default function Homepage() {
             {/* Thank-you dialog: show only once (persisted) */}
             {showThanksDialog && (
                 <DialogBox
-                    message={"merci d'avoir aidé les monstres"}
+                    message={"Merci d'avoir aidé les monstres ! Tu peux recommencer une partie pour rejouer les puzzles et la musique autant de fois que tu veux !"}
                     visible={true}
                     autoCloseMs={4500}
                     onClose={() => setShowThanksDialog(false)}
