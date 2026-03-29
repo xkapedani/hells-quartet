@@ -467,7 +467,13 @@ function Drums({ onClose, resetOnOpen = false }) {
                 padding: 20,
                 boxSizing: "border-box",
                 justifyContent: "center",
-                backgroundImage: `url(${publicPath}/images/scene.png)`,
+                backgroundImage: `
+                    linear-gradient(
+                        180deg,
+                        rgba(4, 2, 8, 0.72) 0%,
+                        rgba(10, 5, 16, 0.65) 50%,
+                        rgba(4, 2, 8, 0.8) 100%
+                    ), url(${publicPath}/images/scene.png)`,
                 backgroundAttachment: "fixed",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
@@ -495,7 +501,11 @@ function Drums({ onClose, resetOnOpen = false }) {
                 }}
             >
                 <h1 className="trio-title">Joue en rythme</h1>
-                <p className="">
+                <p
+                    style={{
+                        color: "#aaa",
+                    }}
+                >
                     {
                         "Aide-le à retrouver le rythme, écoute le rythme joué et reproduis le."
                     }
@@ -518,8 +528,8 @@ function Drums({ onClose, resetOnOpen = false }) {
                     tabIndex={0}
                     // crop image to be square
                     style={{
-                        width: 740,
-                        height: 640,
+                        width: 520,
+                        height: 450,
                         objectFit: "cover",
                         display: "block",
                         margin: "0 auto",
@@ -527,7 +537,7 @@ function Drums({ onClose, resetOnOpen = false }) {
                             ? "brightness(1.05) saturate(1.2) drop-shadow(0 12px 36px rgba(200,50,50,0.25))"
                             : "none",
                         transition: "filter 400ms ease, transform 400ms ease",
-                        transform: pieuvreHappy ? "scale(1.05)" : "scale(1)",
+                        transform: pieuvreHappy ? "translateX(140px) scale(1.05)" : "translateX(140px) scale(1)",
                         cursor:
                             playing || pattern.length === 0 || cooldown
                                 ? "not-allowed"
@@ -595,12 +605,7 @@ function Drums({ onClose, resetOnOpen = false }) {
                                 : `${publicPath}/images/drum-full.png`
                         }
                         alt="drum"
-                        style={{
-                            width: 300,
-                            height: 500,
-                            objectFit: "cover",
-                            pointerEvents: "none",
-                        }}
+                        style={{ width: 280, height: 440, objectFit: "cover", pointerEvents: "none" }}
                     />
                 </div>
             </div>

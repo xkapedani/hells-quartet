@@ -6,10 +6,21 @@
   padding: 24px;
   background-size: cover;
   background-position: center;
-  min-height: 520px;
+  min-height: 100vh;
   color: #222;
   height: 100%;
   align-content: center;
+  position: relative;
+}
+
+.piano-grid-header {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: calc(100% - 48px);
+  z-index: 1;
 }
 
 .piano-left {
@@ -19,15 +30,35 @@
   justify-content: flex-start;
 }
 
+.piano-page {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.piano-header {
+  text-align: center;
+  padding: 16px 24px 0;
+}
+
 .piano-title {
-  margin: 8px 0 12px 0;
+  margin: 0;
   color: white;
+  font-size: 2rem;
+}
+
+.piano-subtitle {
+  margin: 8px auto 18px auto;
+  color: #aaa;
+  font-size: 1rem;
+  max-width: 520px;
 }
 
 .piano-image {
   max-width: 90%;
   height: auto;
   cursor: pointer;
+  margin-top: 150px;
+  margin-left: 150px;
 }
 
 .piano-right {

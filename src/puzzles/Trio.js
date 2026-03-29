@@ -372,7 +372,8 @@ export default function Trio({ onClose }) {
         <div
             className="trio"
             style={{
-                backgroundImage: `url(${PUBLIC}/images/scene.png)`,
+                backgroundColor: "#040208",
+                backgroundImage: `linear-gradient(180deg, rgba(4, 2, 8, 0.72) 0%, rgba(10, 5, 16, 0.65) 50%, rgba(4, 2, 8, 0.8) 100%), url(${PUBLIC}/images/scene.png)`,
                 backgroundAttachment: "fixed",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
