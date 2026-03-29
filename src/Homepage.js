@@ -6,6 +6,7 @@ import Piano from "./puzzles/Piano";
 import Bass from "./puzzles/Bass";
 import * as Tone from "tone";
 import { PlayFromFile } from "./Player.js";
+import DialogBox from "./components/DialogBox";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
@@ -66,6 +67,7 @@ export default function Homepage() {
     // Intro full-page image visibility (click to fade out and reveal title)
     const [introMounted, setIntroMounted] = useState(true);
     const [introVisible, setIntroVisible] = useState(true);
+    const [heroDialogVisible, setHeroDialogVisible] = useState(false);
 
     const [arrowsVisible, setArrowsVisible] = useState(true);
     const stageRef = useRef(null);
@@ -102,6 +104,10 @@ export default function Homepage() {
             });
         }
     }, []);
+
+    useEffect(() => {
+        if (!introMounted) setHeroDialogVisible(true);
+    }, [introMounted]);
 
     useEffect(() => {
         function onScroll() {
@@ -247,22 +253,30 @@ export default function Homepage() {
                 <div className="hp-hero-bg" />
 
                 {introMounted && (
-                    <div
-                        className={
-                            "hp-intro-image" +
-                            (introVisible ? "" : " hp-intro-image--hidden")
-                        }
-                        onClick={handleIntroClick}
-                        role="button"
-                        aria-label="Intro image - click to continue"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") handleIntroClick();
-                        }}
-                        style={{
-                            backgroundImage: `url(${PUBLIC}/images/scene-ferme.png)`,
-                        }}
-                    />
+                    <>
+                        <div
+                            className={
+                                "hp-intro-image" +
+                                (introVisible ? "" : " hp-intro-image--hidden")
+                            }
+                            onClick={handleIntroClick}
+                            role="button"
+                            aria-label="Intro image - click to continue"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") handleIntroClick();
+                            }}
+                            style={{
+                                backgroundImage: `url(${PUBLIC}/images/scene-ferme.png)`,
+                            }}
+                        />
+
+                        <DialogBox
+                            message={"Bienvenue au spectacle des enfers ! Chut, le spectacle va commencer..."}
+                            visible={introVisible}
+                            position="bottom"
+                        />
+                    </>
                 )}
 
                 <div className="hp-hero-title-box">
@@ -275,14 +289,17 @@ export default function Homepage() {
                     </div>
                 </div>
 
-                <div className="hp-hero-lore-box">
-                    <p className="hp-hero-lore">
-                        Bienvenue chez les monstres, tu as été désigné pour
-                        aider le Quartet de l'Enfer à régler ses problèmes afin
-                        qu'ils puissent rejouer en harmonie tous ensemble. Aide
-                        chaque musicien à retrouver sa musique !
-                    </p>
-                </div>
+                {/* Show the hero lore as a dialog instead of subtitle */}
+                {!introMounted && (
+                    <DialogBox
+                        message={
+                            "Quel désastre ! Peux-tu aider le Quartet de l'Enfer à régler ses problèmes afin qu'ils puissent rejouer en harmonie tous ensemble ? Aide chaque musicien à retrouver sa musique!"
+                        }
+                        visible={heroDialogVisible && !showOverlay}
+                        onClose={() => setHeroDialogVisible(false)}
+                        position="bottom"
+                    />
+                )}
 
                 <div
                     className={
